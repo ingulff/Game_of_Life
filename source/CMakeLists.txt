@@ -48,6 +48,7 @@ add_executable(${EXECUTABLE_TARGET_NAME})
 set(${EXECUTABLE_TARGET_NAME}_source
 	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/main_window.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/sdl_renderer.cpp
 )
 
 # other source
