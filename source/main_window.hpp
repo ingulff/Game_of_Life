@@ -3,18 +3,13 @@
 
 #include <memory>
 
+#include "error/error.hpp"
+
 namespace tt_program
 {
 
 class main_window
 {
-
-public:
-	enum class status_code
-	{
-		normal,
-		invalid,
-	};
 
 public:
 	main_window();
@@ -33,7 +28,7 @@ public:
 private:
 	class main_window_impl;
 	std::unique_ptr<main_window_impl> m_impl;
-	enum class status_code m_status;
+	enum class error::status_code m_status;
 };
 
 } // namespace tt_program
