@@ -32,3 +32,11 @@
 *.out
 *.app
 
+
+# Folders
+out/
+build/
+.vs*/
+
+docs/PRD.md
+docs/Plan.md
