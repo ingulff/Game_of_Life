@@ -26,6 +26,9 @@ public:
 	enum class error::status_code initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags);
 
 public:
+	void draw_cell(SDL_Rect & cell);
+
+public:
 	void update();
 
 private:

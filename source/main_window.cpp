@@ -100,9 +100,13 @@ public:
 			{
 				this->pause_handle();
 			};
+			auto cell_draw_handler_callback = [this](SDL_Rect & cell)
+			{
+				this->m_renderer.draw_cell(cell);
+			};
 
 			m_status = m_io_interactor.initialize(tt_program::make_callbacks(quit_handle_callback, 
-				pause_handle_callback));
+				pause_handle_callback, cell_draw_handler_callback));
 		}
 
 	}

@@ -89,12 +89,12 @@ private:
 		}
 	}
 
-private:
-	//void draw_cell()
-	//{
-	//	SDL_Rect rectangle{0,0,15,15};
-	//	SDL_RenderFillRect(m_renderer.get(), &rectangle);
-	//}
+public:
+	void draw_cell(SDL_Rect & cell)
+	{
+		SDL_RenderFillRect(m_renderer.get(), &cell);
+		SDL_RenderPresent(m_renderer.get());
+	}
 
 private:
 	tt_program::details::sdl_renderer_ptr m_renderer;
@@ -127,6 +127,12 @@ enum class error::status_code sdl_renderer::initialize(tt_program::details::sdl_
 	m_status = m_impl->initialize(window_ptr, index, flags);
 
 	return m_status;
+}
+
+
+void sdl_renderer::draw_cell(SDL_Rect & cell)
+{
+	m_impl->draw_cell(cell);
 }
 
 
