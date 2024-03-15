@@ -9,6 +9,7 @@
 #undef main
 
 #include "error/error.hpp"
+#include "io_interactor.hpp"
 #include "main_window.hpp"
 #include "sdl_renderer.hpp"
 #include "utils/sdl_window_ptr.hpp"
@@ -23,8 +24,13 @@ public:
 	main_window_impl()
 		: m_main_window()
 		, m_renderer()
+		, m_io_interactor()
+		, m_status(error::status_code::invalid)
 	{
-//std::cout << "main_window::main_window()" << std::endl;
+		if(SDL_Init(SDL_INIT_EVERYTHING) == 0)
+		{
+			initialize();
+		}
 	}
 
 	main_window_impl(main_window_impl & other) = delete;
@@ -37,88 +43,121 @@ public:
 
 	main_window_impl & operator=(main_window_impl && other)
 	{
-//std::cout << "main_window::operator=(&&)" << std::endl;
 		m_main_window = std::move(other.m_main_window);
 		m_renderer = std::move(other.m_renderer);
 	}
 
 	~main_window_impl()
-	{}
+	{
+		this->deinitialize();
+	}
 
 public:
-	enum class error::status_code initialize()
+	void set_status(error::status_code status)
 	{
-		enum class error::status_code result = error::status_code::invalid;
-			
-		if(m_main_window)
+		m_status = status;
+	}
+
+public:
+	void quit_handle()
+	{
+std::cout << "quit - true" << std::endl;
+		set_status(error::status_code::stopped);
+	}
+
+	void pause_handle()
+	{
+		if(m_status == error::status_code::paused)
 		{
-			result = m_renderer.initialize(m_main_window, -1, SDL_RENDERER_PRESENTVSYNC);
+std::cout << "play - true" << std::endl;
+			set_status(error::status_code::active);
 		}
-//std::cout << "main_window::initialize()" << std::endl;
-		return result;
+		else
+		{
+std::cout << "play - false" << std::endl;
+			set_status(error::status_code::paused);
+		}
+	}
+
+
+public:
+	void initialize()
+	{
+			
+		if( m_main_window || m_status == error::status_code::active )
+		{
+			m_status = m_renderer.initialize(m_main_window, -1, SDL_RENDERER_PRESENTVSYNC);
+		}
+
+		
+		if( m_status == error::status_code::active )
+		{
+			auto quit_handle_callback = [this]()
+			{
+				this->quit_handle();
+			};
+			auto pause_handle_callback = [this]()
+			{
+				this->pause_handle();
+			};
+
+			m_status = m_io_interactor.initialize(tt_program::make_callbacks(quit_handle_callback, 
+				pause_handle_callback));
+		}
+
 	}
 
 	void deinitialize()
 	{
-//std::cout << "main_window::deinitialize()" << std::endl;
+		SDL_Quit();
+	}
+
+private:
+	bool is_playable()
+	{
+		return m_status == error::status_code::active || m_status == error::status_code::paused;
 	}
 
 public:
-	int exec()
+	error::errc exec()
 	{
-//std::cout << "main_window::exec()" << std::endl;
-	while(true)
-	{
-		//if(m_status != error::status_code::normal)
-		//{
-//std::cerr << "main_window::exec() - status of window not valid" << std::endl;
-		//	break;
-		//}
-		m_renderer.update();
-//std::cout << "work" << std::endl;
-	}
+		while(true)
+		{
+			if( !is_playable() )
+			{
+				break;
+			}
+		
+			m_renderer.update();
+			m_io_interactor.update();
+		}
 
-//	SDL_Quit();
-//std::cout << "main_window::exec()" << std::endl;
-
-	return 0;
+		return error::to_errc(m_status);
 	}
 
 private:
 	tt_program::details::sdl_window_ptr m_main_window;
 	tt_program::sdl_renderer m_renderer;
+	tt_program::io_interactor m_io_interactor;
+
+	enum class error::status_code m_status;
 };
 
 
 main_window::main_window()
 	: m_impl(std::make_unique<main_window_impl>())
-	, m_status(error::status_code::invalid)
-{
-	if(SDL_Init(SDL_INIT_EVERYTHING) == 0)
-	{
-		m_status = m_impl->initialize();
-	}
-//	else
-//	{
-//std::cerr << "main_window::main_window() - sdl window not initialized" << std::endl;
-//	}
-//std::cout << "main_window::main_window()" << std::endl;
-}
+{}
 
 main_window::main_window(main_window && other) = default;
 main_window & main_window::operator=(main_window && other) = default;
 
 main_window::~main_window()
-{
-	m_impl->deinitialize();
-	SDL_Quit();
-//std::cout << "main_window::~main_window()" << std::endl;
-}
+{}
 
 
 int main_window::exec()
 {
-	return m_impl->exec();
+	return error::to_int(m_impl->exec());
 }
 
 } // namespace tt_program

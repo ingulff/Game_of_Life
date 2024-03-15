@@ -28,7 +28,6 @@ public:
 private:
 	class main_window_impl;
 	std::unique_ptr<main_window_impl> m_impl;
-	enum class error::status_code m_status;
 };
 
 } // namespace tt_program
