@@ -11,12 +11,14 @@ namespace tt_program
 
 struct callbacks_t
 {
-	std::function<void()> quit_handler;
-	std::function<void()> pause_handler;
+	std::function<void()> quit_handle;
+	std::function<void()> pause_handle;
+	std::function<void(SDL_Rect &)> cell_draw_handle;
 };
 
 callbacks_t make_callbacks(std::function<void()> quit_handler, 
-	std::function<void()> pause_handler);
+	std::function<void()> pause_handler,
+	std::function<void(SDL_Rect &)> cell_draw_handler);
 
 class io_interactor
 {

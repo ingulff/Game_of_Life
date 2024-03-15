@@ -2,13 +2,16 @@
  *  ᛝ
  */
 
+#include <iostream>
 #include <functional>
 #include <utility>
 
 #include <SDL_events.h>
+#include <SDL_rect.h>
 
 #include "error/error.hpp"
 #include "io_interactor.hpp"
+#include "utils/sdl_mouse_handler.hpp"
 
 
 namespace tt_program
@@ -52,12 +55,29 @@ public:
 public:
 	void update()
 	{
+		auto mouse_status = tt_program::details::mouse_handle();
+std::cout << mouse_status.status << ' ' << mouse_status.pos_x << ' ' << mouse_status.pos_y << ' ';// << std::endl;
+		auto cell = calculate_cell_coordinates(mouse_status);
+std::cout << cell.x << ' ' << cell.y << std::endl;
+		if(m_callbacks.cell_draw_handle 
+			&& tt_program::details::to_mouse_button_type(mouse_status.status) == tt_program::details::mouse_button_t::left )
+		{
+			m_callbacks.cell_draw_handle(cell);
+		}
+
 		if(SDL_PollEvent(&m_event))
 		{
 			switch(m_event.type)
 			{
 			case SDL_KEYDOWN:
 				key_interact();
+				break;
+			case SDL_QUIT:
+				m_callbacks.quit_handle();
+				break;
+			default:
+				// nothink
+				break;
 			}
 		}
 	}
@@ -68,16 +88,16 @@ private:
 		switch(m_event.key.keysym.sym)
 		{
 		case SDLK_ESCAPE:
-			if(m_callbacks.quit_handler)
+			if(m_callbacks.quit_handle)
 			{
-				m_callbacks.quit_handler();
+				m_callbacks.quit_handle();
 			}
 			break;
 
 		case SDLK_SPACE:
-			if(m_callbacks.pause_handler)
+			if(m_callbacks.pause_handle)
 			{
-				m_callbacks.pause_handler();
+				m_callbacks.pause_handle();
 			}
 			break;
 
@@ -85,6 +105,18 @@ private:
 			// nothink
 			break;
 		}
+	}
+
+private:
+	SDL_Rect calculate_cell_coordinates(tt_program::details::mouse_t & mouse_status)
+	{
+		SDL_Rect rect;
+		rect.x = mouse_status.pos_x / 20 * 20;
+		rect.y = mouse_status.pos_y / 20 * 20;
+		rect.w = 20;
+		rect.h = 20;
+
+		return rect;
 	}
 
 private:
@@ -116,10 +148,11 @@ void io_interactor::update()
 }
 
 
-callbacks_t make_callbacks(std::function<void()> quit_handler, 
-	std::function<void()> pause_handler)
+callbacks_t make_callbacks(std::function<void()> quit_handle, 
+	std::function<void()> pause_handle,
+	std::function<void(SDL_Rect &)> cell_draw_handle)
 {
-	return { std::move(quit_handler), std::move(pause_handler)};
+	return { std::move(quit_handle), std::move(pause_handle), std::move(cell_draw_handle)};
 }
 
 } // namespace tt_program
