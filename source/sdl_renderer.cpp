@@ -20,9 +20,7 @@ class sdl_renderer::sdl_renderer_impl
 public:
 	sdl_renderer_impl()
 		: m_renderer()
-	{
-//std::cout << "sdl_renderer::sdl_renderer()" << std::endl;
-	}
+	{}
 
 	sdl_renderer_impl(sdl_renderer_impl & other) = delete;
 	sdl_renderer_impl & operator=(sdl_renderer_impl & other) = delete;
@@ -33,14 +31,11 @@ public:
 
 	sdl_renderer_impl & operator=(sdl_renderer_impl && other)
 	{
-//std::cout << "sdl_renderer::operator=(&&)" << std::endl;
 		m_renderer = std::move(other.m_renderer);
 	}
 
 	~sdl_renderer_impl()
-	{
-//std::cout << "sdl_renderer::~sdl_renderer()" << std::endl;
-	}
+	{}
 
 public:
 	enum class error::status_code initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags)
@@ -51,16 +46,15 @@ public:
 
 		if( m_renderer )
 		{
-			result = error::status_code::normal;
+			result = error::status_code::active;
 		}
-//std::cout << "sdl_renderer::initialize()" << std::endl;
+
 		return result;
 	}
 
 public:
 	void update()
 	{
-//std::cout << "sdl_renderer::update()" << std::endl;
 		fill_backgrownd();
 		draw_backgrownd_lines();
 
@@ -77,7 +71,6 @@ private:
 			colors::backgrownd_color.alpha );
 
 		SDL_RenderClear(m_renderer.get());		
-//std::cout << "sdl_renderer::fill_backgrownd()" << std::endl;
 	}
 
 	void draw_backgrownd_lines()
