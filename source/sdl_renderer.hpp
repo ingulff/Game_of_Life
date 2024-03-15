@@ -25,6 +25,9 @@ public:
 public:
 	enum class error::status_code initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags);
 
+public:
+	void update();
+
 private:
 	class sdl_renderer_impl;
 	std::unique_ptr<sdl_renderer_impl> m_impl;

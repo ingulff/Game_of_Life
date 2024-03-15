@@ -23,7 +23,9 @@ public:
 	main_window_impl()
 		: m_main_window()
 		, m_renderer()
-	{}
+	{
+//std::cout << "main_window::main_window()" << std::endl;
+	}
 
 	main_window_impl(main_window_impl & other) = delete;
 	main_window_impl & operator=(main_window_impl & other) = delete;
@@ -35,6 +37,7 @@ public:
 
 	main_window_impl & operator=(main_window_impl && other)
 	{
+//std::cout << "main_window::operator=(&&)" << std::endl;
 		m_main_window = std::move(other.m_main_window);
 		m_renderer = std::move(other.m_renderer);
 	}
@@ -51,12 +54,35 @@ public:
 		{
 			result = m_renderer.initialize(m_main_window, -1, SDL_RENDERER_PRESENTVSYNC);
 		}
-
+//std::cout << "main_window::initialize()" << std::endl;
 		return result;
 	}
 
 	void deinitialize()
-	{}
+	{
+//std::cout << "main_window::deinitialize()" << std::endl;
+	}
+
+public:
+	int exec()
+	{
+//std::cout << "main_window::exec()" << std::endl;
+	while(true)
+	{
+		//if(m_status != error::status_code::normal)
+		//{
+//std::cerr << "main_window::exec() - status of window not valid" << std::endl;
+		//	break;
+		//}
+		m_renderer.update();
+//std::cout << "work" << std::endl;
+	}
+
+//	SDL_Quit();
+//std::cout << "main_window::exec()" << std::endl;
+
+	return 0;
+	}
 
 private:
 	tt_program::details::sdl_window_ptr m_main_window;
@@ -72,11 +98,11 @@ main_window::main_window()
 	{
 		m_status = m_impl->initialize();
 	}
-	else
-	{
-std::cerr << "main_window::main_window() - sdl window not initialized" << std::endl;
-	}
-std::cout << "main_window::main_window()" << std::endl;
+//	else
+//	{
+//std::cerr << "main_window::main_window() - sdl window not initialized" << std::endl;
+//	}
+//std::cout << "main_window::main_window()" << std::endl;
 }
 
 main_window::main_window(main_window && other) = default;
@@ -86,26 +112,13 @@ main_window::~main_window()
 {
 	m_impl->deinitialize();
 	SDL_Quit();
-std::cout << "main_window::~main_window()" << std::endl;
+//std::cout << "main_window::~main_window()" << std::endl;
 }
 
 
 int main_window::exec()
 {
-std::cout << "main_window::exec()" << std::endl;
-	while(true)
-	{
-		if(m_status != error::status_code::normal)
-		{
-std::cerr << "main_window::exec() - status of window not valid" << std::endl;
-			break;
-		}
-		;
-std::cout << "work" << std::endl;
-	}
-
-//	SDL_Quit();
-	return 0;
+	return m_impl->exec();
 }
 
 } // namespace tt_program
