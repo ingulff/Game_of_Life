@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "error/error.hpp"
+#include "utils/board.hpp"
 #include "utils/sdl_window_ptr.hpp"
 
 namespace tt_program
@@ -26,10 +27,7 @@ public:
 	enum class error::status_code initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags);
 
 public:
-	void draw_cell(SDL_Rect & cell);
-
-public:
-	void update();
+	void update(tt_program::details::board_t & board);
 
 private:
 	class sdl_renderer_impl;
