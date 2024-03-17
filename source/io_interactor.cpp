@@ -11,6 +11,7 @@
 
 #include "error/error.hpp"
 #include "io_interactor.hpp"
+#include "utils/index_helpers.hpp"
 #include "utils/sdl_mouse_handler.hpp"
 
 
@@ -55,14 +56,25 @@ public:
 public:
 	void update()
 	{
+		using tt_program::details::to_mouse_button_type;
+
 		auto mouse_status = tt_program::details::mouse_handle();
-std::cout << mouse_status.status << ' ' << mouse_status.pos_x << ' ' << mouse_status.pos_y << ' ';// << std::endl;
-		auto cell = calculate_cell_coordinates(mouse_status);
-std::cout << cell.x << ' ' << cell.y << std::endl;
-		if(m_callbacks.cell_draw_handle 
-			&& tt_program::details::to_mouse_button_type(mouse_status.status) == tt_program::details::mouse_button_t::left )
+std::cout << mouse_status.status << ' ' << mouse_status.pos_x << ' ' << mouse_status.pos_y << std::endl;
+		auto mouse_point = calculate_cell_coordinates(mouse_status);
+//std::cout << mouse_point.x << ' ' << mouse_point.y << std::endl;
+		if( m_callbacks.chagne_cell_handle )
 		{
-			m_callbacks.cell_draw_handle(cell);
+			if( tt_program::details::is_left_clicked(to_mouse_button_type(mouse_status.status))  )
+			{
+				m_callbacks.chagne_cell_handle(mouse_point, tt_program::details::cell_state::alive);
+			}
+
+			if( tt_program::details::is_right_clicked(to_mouse_button_type(mouse_status.status)) )
+			{
+std::cout << "right mouse click" << std::endl;
+				m_callbacks.chagne_cell_handle(mouse_point, tt_program::details::cell_state::killed);
+			}
+			
 		}
 
 		if(SDL_PollEvent(&m_event))
@@ -108,15 +120,13 @@ private:
 	}
 
 private:
-	SDL_Rect calculate_cell_coordinates(tt_program::details::mouse_t & mouse_status)
+	tt_program::details::point_t calculate_cell_coordinates(tt_program::details::mouse_t & mouse_status)
 	{
-		SDL_Rect rect;
-		rect.x = mouse_status.pos_x / 20 * 20;
-		rect.y = mouse_status.pos_y / 20 * 20;
-		rect.w = 20;
-		rect.h = 20;
+		tt_program::details::point_t mouse_point;
+		mouse_point.x = mouse_status.pos_x / 20;
+		mouse_point.y = mouse_status.pos_y / 20;
 
-		return rect;
+		return mouse_point;
 	}
 
 private:
@@ -150,9 +160,9 @@ void io_interactor::update()
 
 callbacks_t make_callbacks(std::function<void()> quit_handle, 
 	std::function<void()> pause_handle,
-	std::function<void(SDL_Rect &)> cell_draw_handle)
+	std::function<void(tt_program::details::point_t mouse_point, tt_program::details::cell_state)> chagne_cell_handle)
 {
-	return { std::move(quit_handle), std::move(pause_handle), std::move(cell_draw_handle)};
+	return { std::move(quit_handle), std::move(pause_handle), std::move(chagne_cell_handle)};
 }
 
 } // namespace tt_program
