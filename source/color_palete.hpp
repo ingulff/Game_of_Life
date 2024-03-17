@@ -18,6 +18,7 @@ struct color_t
 
 inline struct color_t backgrownd_color{ 255, 255, 240, SDL_ALPHA_OPAQUE };
 inline struct color_t lines_color{ 0, 64, 64, SDL_ALPHA_OPAQUE };
+inline struct color_t cell_color{ 134, 1, 17, SDL_ALPHA_OPAQUE };
 
 } // namespace colors
 
