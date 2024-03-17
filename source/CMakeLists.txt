@@ -47,10 +47,12 @@ add_executable(${EXECUTABLE_TARGET_NAME})
 
 set(${EXECUTABLE_TARGET_NAME}_source
 	${CMAKE_CURRENT_SOURCE_DIR}/error/error.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/game_engine.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/io_interactor.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/main_window.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/sdl_renderer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/utils/index_helpers.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/utils/sdl_mouse_handler.cpp
 )
 
