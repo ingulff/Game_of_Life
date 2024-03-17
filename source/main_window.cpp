@@ -9,6 +9,7 @@
 #undef main
 
 #include "error/error.hpp"
+#include "game_engine.hpp"
 #include "io_interactor.hpp"
 #include "main_window.hpp"
 #include "sdl_renderer.hpp"
@@ -24,6 +25,7 @@ public:
 	main_window_impl()
 		: m_main_window()
 		, m_renderer()
+		, m_engine()
 		, m_io_interactor()
 		, m_status(error::status_code::invalid)
 	{
@@ -39,12 +41,18 @@ public:
 	main_window_impl(main_window_impl && other)
 		: m_main_window(std::move(other.m_main_window))
 		, m_renderer(std::move(other.m_renderer))
+		, m_engine(std::move(other.m_engine))
+		, m_io_interactor(std::move(other.m_io_interactor))
+		, m_status(std::move(other.m_status))
 	{}
 
 	main_window_impl & operator=(main_window_impl && other)
 	{
 		m_main_window = std::move(other.m_main_window);
 		m_renderer = std::move(other.m_renderer);
+		m_engine = std::move(other.m_engine);
+		m_io_interactor = std::move(other.m_io_interactor);
+		m_status = std::move(other.m_status);
 	}
 
 	~main_window_impl()
@@ -59,39 +67,14 @@ public:
 	}
 
 public:
-	void quit_handle()
-	{
-std::cout << "quit - true" << std::endl;
-		set_status(error::status_code::stopped);
-	}
-
-	void pause_handle()
-	{
-		if(m_status == error::status_code::paused)
-		{
-std::cout << "play - true" << std::endl;
-			set_status(error::status_code::active);
-		}
-		else
-		{
-std::cout << "play - false" << std::endl;
-			set_status(error::status_code::paused);
-		}
-	}
-
-
-public:
 	void initialize()
 	{
 			
-		if( m_main_window || m_status == error::status_code::active )
+		if( m_main_window )
 		{
-			m_status = m_renderer.initialize(m_main_window, -1, SDL_RENDERER_PRESENTVSYNC);
-		}
+			auto renderer_status = m_renderer.initialize(m_main_window, -1, SDL_RENDERER_PRESENTVSYNC);
+			auto engine_status = m_engine.initialize(1000, 1000);
 
-		
-		if( m_status == error::status_code::active )
-		{
 			auto quit_handle_callback = [this]()
 			{
 				this->quit_handle();
@@ -100,15 +83,23 @@ public:
 			{
 				this->pause_handle();
 			};
-			auto cell_draw_handler_callback = [this](SDL_Rect & cell)
+			auto change_cell_handler_callback = [this](tt_program::details::point_t mouse_status, tt_program::details::cell_state cell_status)
 			{
-				this->m_renderer.draw_cell(cell);
+				this->m_engine.change_cell_handle( std::move(mouse_status), cell_status );
 			};
+			auto interactor_status = m_io_interactor.initialize(tt_program::make_callbacks(quit_handle_callback, 
+				pause_handle_callback, 
+				change_cell_handler_callback));
 
-			m_status = m_io_interactor.initialize(tt_program::make_callbacks(quit_handle_callback, 
-				pause_handle_callback, cell_draw_handler_callback));
+			bool is_init = is_initialized(renderer_status) 
+				&& is_initialized(engine_status)
+				&& is_initialized(interactor_status);
+
+			if( is_init )
+			{
+				m_status = error::status_code::paused;
+			}
 		}
-
 	}
 
 	void deinitialize()
@@ -122,6 +113,32 @@ private:
 		return m_status == error::status_code::active || m_status == error::status_code::paused;
 	}
 
+	bool is_initialized(error::status_code & status)
+	{
+		return status == error::status_code::paused;
+	}
+
+public:
+	void quit_handle()
+	{
+//std::cout << "quit - true" << std::endl;
+		set_status(error::status_code::stopped);
+	}
+
+	void pause_handle()
+	{
+		if(m_status == error::status_code::paused)
+		{
+//std::cout << "play - true" << std::endl;
+			set_status(error::status_code::active);
+		}
+		else
+		{
+//std::cout << "play - false" << std::endl;
+			set_status(error::status_code::paused);
+		}
+	}
+
 public:
 	error::errc exec()
 	{
@@ -132,8 +149,10 @@ public:
 				break;
 			}
 		
-			m_renderer.update();
 			m_io_interactor.update();
+			auto board = m_engine.update();
+			m_renderer.update(board);
+
 		}
 
 		return error::to_errc(m_status);
@@ -142,6 +161,7 @@ public:
 private:
 	tt_program::details::sdl_window_ptr m_main_window;
 	tt_program::sdl_renderer m_renderer;
+	tt_program::engine m_engine;
 	tt_program::io_interactor m_io_interactor;
 
 	enum class error::status_code m_status;
