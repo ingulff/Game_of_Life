@@ -16,6 +16,7 @@ struct mouse_t
 
 struct mouse_t mouse_handle();
 
+
 enum class mouse_button_t
 {
 	left = 1,
@@ -28,6 +29,10 @@ enum class mouse_button_t
 };
 
 enum class mouse_button_t to_mouse_button_type(int type);
+
+
+bool is_left_clicked(mouse_button_t status);
+bool is_right_clicked(mouse_button_t status);
 
 }
 
