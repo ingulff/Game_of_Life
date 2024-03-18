@@ -87,9 +87,24 @@ public:
 			{
 				this->m_engine.change_cell_handle( std::move(mouse_status), cell_status);
 			};
+			auto clear_board_hanler_callback = [this]()
+			{
+				this->m_engine.clear_board_handle();
+			};
+			auto fullscreen_handler_callback = [this]()
+			{
+				this->m_renderer.fullscreen_handle();
+			};
+			auto loop_board_handler_callback = [this]()
+			{
+				this->m_engine.loop_board_handle();
+			};
 			auto interactor_status = m_io_interactor.initialize(tt_program::make_callbacks(quit_handle_callback, 
 				pause_handle_callback, 
-				change_cell_handler_callback));
+				change_cell_handler_callback,
+				clear_board_hanler_callback,
+				fullscreen_handler_callback,
+				loop_board_handler_callback));
 
 			bool is_init = is_initialized(renderer_status) 
 				&& is_initialized(engine_status)

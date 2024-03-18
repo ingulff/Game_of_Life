@@ -15,11 +15,17 @@ struct callbacks_t
 	std::function<void()> quit_handle;
 	std::function<void()> pause_handle;
 	std::function<void(tt_program::details::point_t, tt_program::details::cell_state)> chagne_cell_handle;
+	std::function<void()> clear_board_handle;
+	std::function<void()> loop_board_handle;
+	std::function<void()> fullscreen_handle;
 };
 
 callbacks_t make_callbacks(std::function<void()> quit_handler, 
 	std::function<void()> pause_handler,
-	std::function<void(tt_program::details::point_t, tt_program::details::cell_state)> chagne_cell_handle);
+	std::function<void(tt_program::details::point_t, tt_program::details::cell_state)> chagne_cell_handle,
+	std::function<void()> clear_board_handle,
+	std::function<void()> loop_board_handle,
+	std::function<void()> fullscreen_handle);
 
 class io_interactor
 {

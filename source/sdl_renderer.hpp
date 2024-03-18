@@ -29,6 +29,9 @@ public:
 public:
 	void update(tt_program::details::board_t & board);
 
+public:
+	void fullscreen_handle();
+
 private:
 	class sdl_renderer_impl;
 	std::unique_ptr<sdl_renderer_impl> m_impl;

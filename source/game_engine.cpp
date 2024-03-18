@@ -256,4 +256,14 @@ void engine::change_cell_handle(tt_program::details::point_t mouse_position, tt_
 	m_impl->change_cell_handle(mouse_position, cell_status);
 }
 
+void engine::clear_board_handle()
+{
+	
+}
+
+void engine::loop_board_handle()
+{
+	
+}
+
 } // namespace tt_program

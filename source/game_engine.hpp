@@ -32,6 +32,10 @@ public:
 public:
 	void change_cell_handle(tt_program::details::point_t, tt_program::details::cell_state cell_status);
 
+	void clear_board_handle();
+
+	void loop_board_handle();
+
 private:
 	class engine_impl;
 	std::unique_ptr<engine_impl> m_impl;

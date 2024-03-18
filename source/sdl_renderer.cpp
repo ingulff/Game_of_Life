@@ -166,4 +166,9 @@ void sdl_renderer::update(tt_program::details::board_t & board)
 	m_impl->update(board);
 }
 
+void sdl_renderer::fullscreen_handle()
+{
+	
+}
+
 } // namespace tt_program
