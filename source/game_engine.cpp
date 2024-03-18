@@ -53,7 +53,7 @@ public:
 	{
 		if( is_playable(status) )
 		{
-			clear_reserve_board(m_reserve_board);
+			clear_board(m_reserve_board);
 			calculate_next_step();
 
 			swap(m_board, m_reserve_board);
@@ -62,18 +62,19 @@ public:
 		return m_board;
 	}
 
-public:
+private:
 	bool is_playable(error::status_code & status)
 	{
 		return status == error::status_code::active;
 	}
 
-	void clear_reserve_board(board_t & reserve_board)
+private:
+	void clear_board(board_t & board)
 	{
 		for(std::int32_t i = 0, size = ((m_board_width * m_board_height) / 20 + 1) / 8 + 1;
 			i < size; ++i)
 		{
-			reserve_board[i] = 0;
+			board[i] = 0;
 		}
 	}
 
@@ -196,6 +197,12 @@ public:
 		}
 	}
 
+	void clear_board_handle()
+	{
+		clear_board(m_reserve_board);
+		clear_board(m_board);
+	}
+
 private:
 	void keep_cell_alive(std::int32_t x, std::int32_t y)
 	{
@@ -258,12 +265,12 @@ void engine::change_cell_handle(tt_program::details::point_t mouse_position, tt_
 
 void engine::clear_board_handle()
 {
-	
+	m_impl->clear_board_handle();
 }
 
 void engine::loop_board_handle()
 {
-	
+
 }
 
 } // namespace tt_program
