@@ -59,9 +59,7 @@ public:
 		using tt_program::details::to_mouse_button_type;
 
 		auto mouse_status = tt_program::details::mouse_handle();
-std::cout << mouse_status.status << ' ' << mouse_status.pos_x << ' ' << mouse_status.pos_y << std::endl;
 		auto mouse_point = calculate_cell_coordinates(mouse_status);
-//std::cout << mouse_point.x << ' ' << mouse_point.y << std::endl;
 		if( m_callbacks.chagne_cell_handle )
 		{
 			if( tt_program::details::is_left_clicked(to_mouse_button_type(mouse_status.status))  )
@@ -71,7 +69,6 @@ std::cout << mouse_status.status << ' ' << mouse_status.pos_x << ' ' << mouse_st
 
 			if( tt_program::details::is_right_clicked(to_mouse_button_type(mouse_status.status)) )
 			{
-std::cout << "right mouse click" << std::endl;
 				m_callbacks.chagne_cell_handle(mouse_point, tt_program::details::cell_state::killed);
 			}
 			

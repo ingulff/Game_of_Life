@@ -85,7 +85,7 @@ public:
 			};
 			auto change_cell_handler_callback = [this](tt_program::details::point_t mouse_status, tt_program::details::cell_state cell_status)
 			{
-				this->m_engine.change_cell_handle( std::move(mouse_status), cell_status );
+				this->m_engine.change_cell_handle( std::move(mouse_status), cell_status);
 			};
 			auto interactor_status = m_io_interactor.initialize(tt_program::make_callbacks(quit_handle_callback, 
 				pause_handle_callback, 
@@ -121,7 +121,6 @@ private:
 public:
 	void quit_handle()
 	{
-//std::cout << "quit - true" << std::endl;
 		set_status(error::status_code::stopped);
 	}
 
@@ -129,12 +128,10 @@ public:
 	{
 		if(m_status == error::status_code::paused)
 		{
-//std::cout << "play - true" << std::endl;
 			set_status(error::status_code::active);
 		}
 		else
 		{
-//std::cout << "play - false" << std::endl;
 			set_status(error::status_code::paused);
 		}
 	}
@@ -150,7 +147,7 @@ public:
 			}
 		
 			m_io_interactor.update();
-			auto board = m_engine.update();
+			auto board = m_engine.update(m_status);
 			m_renderer.update(board);
 
 		}
