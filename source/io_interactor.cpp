@@ -59,17 +59,16 @@ public:
 		using tt_program::details::to_mouse_button_type;
 
 		auto mouse_status = tt_program::details::mouse_handle();
-		auto mouse_point = calculate_cell_coordinates(mouse_status);
 		if( m_callbacks.chagne_cell_handle )
 		{
 			if( tt_program::details::is_left_clicked(to_mouse_button_type(mouse_status.status))  )
 			{
-				m_callbacks.chagne_cell_handle(mouse_point, tt_program::details::cell_state::alive);
+				m_callbacks.chagne_cell_handle({mouse_status.pos_x, mouse_status.pos_y}, tt_program::details::cell_state::alive);
 			}
 
 			if( tt_program::details::is_right_clicked(to_mouse_button_type(mouse_status.status)) )
 			{
-				m_callbacks.chagne_cell_handle(mouse_point, tt_program::details::cell_state::killed);
+				m_callbacks.chagne_cell_handle({mouse_status.pos_x, mouse_status.pos_y}, tt_program::details::cell_state::killed);
 			}
 			
 		}
@@ -135,16 +134,6 @@ private:
 			// nothink
 			break;
 		}
-	}
-
-private:
-	tt_program::details::point_t calculate_cell_coordinates(tt_program::details::mouse_t & mouse_status)
-	{
-		tt_program::details::point_t mouse_point;
-		mouse_point.x = mouse_status.pos_x / 20;
-		mouse_point.y = mouse_status.pos_y / 20;
-
-		return mouse_point;
 	}
 
 private:
