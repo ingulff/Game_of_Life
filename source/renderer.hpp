@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "error/error.hpp"
+#include "settings.hpp"
 #include "utils/board.hpp"
 #include "utils/sdl_window_ptr.hpp"
 
@@ -24,7 +25,7 @@ public:
 	~renderer();
 
 public:
-	enum class error::status_code initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags);
+	enum class error::status_code initialize();
 
 public:
 	void update(tt_program::details::board_t & board);

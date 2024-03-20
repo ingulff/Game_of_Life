@@ -16,7 +16,7 @@ public:
 	{}
 
 	sdl_renderer_ptr(sdl_window_ptr & window_ptr, int index, Uint32 flags)
-		: m_renderer(SDL_CreateRenderer(window_ptr.get(), -1, SDL_RENDERER_PRESENTVSYNC))
+		: m_renderer(SDL_CreateRenderer(window_ptr.get(), index, flags))
 	{}
 
 	sdl_renderer_ptr(sdl_renderer_ptr & other) = delete;

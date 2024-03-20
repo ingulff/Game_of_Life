@@ -23,6 +23,9 @@ public:
 	~main_window();
 
 public:
+	int initialize();
+
+public:
 	int exec();
 
 private:

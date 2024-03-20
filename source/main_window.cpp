@@ -23,24 +23,18 @@ class main_window::main_window_impl
 
 public:
 	main_window_impl()
-		: m_main_window()
-		, m_renderer()
+		: m_renderer()
 		, m_engine()
 		, m_io_interactor()
-		, m_status(error::status_code::invalid)
 	{
-		if(SDL_Init(SDL_INIT_EVERYTHING) == 0)
-		{
-			initialize();
-		}
+		initialize();
 	}
 
 	main_window_impl(main_window_impl & other) = delete;
 	main_window_impl & operator=(main_window_impl & other) = delete;
 
 	main_window_impl(main_window_impl && other)
-		: m_main_window(std::move(other.m_main_window))
-		, m_renderer(std::move(other.m_renderer))
+		: m_renderer(std::move(other.m_renderer))
 		, m_engine(std::move(other.m_engine))
 		, m_io_interactor(std::move(other.m_io_interactor))
 		, m_status(std::move(other.m_status))
@@ -48,7 +42,6 @@ public:
 
 	main_window_impl & operator=(main_window_impl && other)
 	{
-		m_main_window = std::move(other.m_main_window);
 		m_renderer = std::move(other.m_renderer);
 		m_engine = std::move(other.m_engine);
 		m_io_interactor = std::move(other.m_io_interactor);
@@ -67,12 +60,11 @@ public:
 	}
 
 public:
-	void initialize()
+	error::errc initialize()
 	{
-			
-		if( m_main_window )
+		if( SDL_Init(SDL_INIT_EVERYTHING) == 0 )
 		{
-			auto renderer_status = m_renderer.initialize(m_main_window, -1, SDL_RENDERER_PRESENTVSYNC);
+			auto renderer_status = m_renderer.initialize();
 			auto engine_status = m_engine.initialize(1000, 1000);
 
 			auto quit_handle_callback = [this]()
@@ -115,6 +107,14 @@ public:
 				m_status = error::status_code::paused;
 			}
 		}
+
+		error::errc error = error::errc::invalid_initialization;
+		if( is_playable() )
+		{
+			error = error::errc::ok;
+		}
+
+		return error;
 	}
 
 	void deinitialize()
@@ -171,7 +171,6 @@ public:
 	}
 
 private:
-	tt_program::details::sdl_window_ptr m_main_window;
 	tt_program::renderer m_renderer;
 	tt_program::engine m_engine;
 	tt_program::io_interactor m_io_interactor;
@@ -189,6 +188,12 @@ main_window & main_window::operator=(main_window && other) = default;
 
 main_window::~main_window()
 {}
+
+
+int main_window::initialize()
+{
+	return error::to_int(m_impl->initialize());
+}
 
 
 int main_window::exec()

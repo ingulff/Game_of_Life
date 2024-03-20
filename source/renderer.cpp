@@ -21,7 +21,8 @@ class renderer::renderer_impl
 
 public:
 	renderer_impl()
-		: m_renderer()
+		: m_window()
+		, m_renderer()
 		, is_fullscreen(false)
 	{}
 
@@ -29,11 +30,13 @@ public:
 	renderer_impl & operator=(renderer_impl & other) = delete;
 
 	renderer_impl(renderer_impl && other)
-		: m_renderer(std::move(other.m_renderer))
+		: m_window(std::move(other.m_window))
+		, m_renderer(std::move(other.m_renderer))
 	{}
 
 	renderer_impl & operator=(renderer_impl && other)
 	{
+		m_window = std::move(m_window);
 		m_renderer = std::move(other.m_renderer);
 	}
 
@@ -41,9 +44,10 @@ public:
 	{}
 
 public:
-	enum class error::status_code initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags)
+	enum class error::status_code initialize()
 	{
-		m_renderer = tt_program::details::sdl_renderer_ptr(window_ptr, index, flags);
+std::cout << "renderer::init()" << std::endl;
+		m_renderer = tt_program::details::sdl_renderer_ptr(m_window,  -1, SDL_RENDERER_PRESENTVSYNC);
 
 		enum class error::status_code result = error::status_code::invalid;
 
@@ -136,6 +140,7 @@ public:
 	}
 
 private:
+	tt_program::details::sdl_window_ptr m_window;
 	tt_program::details::sdl_renderer_ptr m_renderer;
 	bool is_fullscreen;
 };
@@ -162,9 +167,9 @@ renderer::~renderer()
 {}
 
 
-enum class error::status_code renderer::initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags)
+enum class error::status_code renderer::initialize()
 {
-	m_status = m_impl->initialize(window_ptr, index, flags);
+	m_status = m_impl->initialize();
 
 	return m_status;
 }
