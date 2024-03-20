@@ -14,7 +14,7 @@ if(WIN32)
 	add_compile_definitions(_WIN32_WINNT=0x0601)
 endif()
 
-option(TT_BUILD_TESTS "Enable build unit tests" ON)
+option(TT_BUILD_TESTS "Enable build unit tests" OFF)
 
 if(NOT DEFINED CMAKE_BUILD_TYPE AND NOT DEFINED CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
@@ -29,23 +29,6 @@ add_custom_target(${MAIN_TARGET_NAME})
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 include(3rdparty)
-
-#set(DEFAULT_HOST_IP "127.0.0.1")
-#set(DEFAULT_PORT_IP 1234)
-
-#set(HOST_IP ${DEFAULT_HOST_IP})
-#if(DEFINED TT_HOST_IP)
-#	set(HOST_IP ${TT_HOST_IP})
-#endif()
-
-#set(PORT_IP ${DEFAULT_PORT_IP})
-#if(DEFINED TT_PORT_IP)
-#	set(PORT_IP ${TT_PORT_IP})
-#endif()
-
-#message(STATUS "taget:${MAIN_TARGET_NAME} option TT_BUILD_TESTS=${TT_BUILD_TESTS}")
-#message(STATUS "taget:${MAIN_TARGET_NAME} option HOST_IP=${HOST_IP}")
-#message(STATUS "taget:${MAIN_TARGET_NAME} option PORT_IP=${PORT_IP}")
 
 # other option
 
