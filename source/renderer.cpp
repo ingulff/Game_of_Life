@@ -8,6 +8,7 @@
 #include "color_palete.hpp"
 #include "error/error.hpp"
 #include "renderer.hpp"
+#include "settings.hpp"
 #include "utils/board.hpp"
 #include "utils/index_helpers.hpp"
 #include "utils/sdl_renderer_ptr.hpp"
@@ -21,9 +22,9 @@ class renderer::renderer_impl
 
 public:
 	renderer_impl()
-		: m_window()
+		: m_settings(tt_program::make_default_settings())
+		, m_window()
 		, m_renderer()
-		, is_fullscreen(false)
 	{}
 
 	renderer_impl(renderer_impl & other) = delete;
@@ -44,15 +45,21 @@ public:
 	{}
 
 public:
-	enum class error::status_code initialize()
+	enum class error::status_code initialize(tt_program::settings_t & settings)
 	{
-std::cout << "renderer::init()" << std::endl;
-		m_renderer = tt_program::details::sdl_renderer_ptr(m_window,  -1, SDL_RENDERER_PRESENTVSYNC);
+		m_window = tt_program::details::sdl_window_ptr("Life", 
+				SDL_WINDOWPOS_CENTERED, 
+				SDL_WINDOWPOS_CENTERED, 
+				m_settings.window_width, 
+				m_settings.window_height,
+				0);
+		m_renderer = tt_program::details::sdl_renderer_ptr(m_window.get(),  -1, SDL_RENDERER_PRESENTVSYNC);
 
 		enum class error::status_code result = error::status_code::invalid;
 
-		if( m_renderer )
+		if( m_renderer && m_window )
 		{
+			m_settings = settings;
 			result = error::status_code::paused;
 		}
 
@@ -89,29 +96,29 @@ private:
 			colors::lines_color.blue,
 			colors::lines_color.alpha );
 
-		for(int i = 0; i <= 1000; i += 20)
+		for(std::int32_t i = 0; i <= m_settings.window_width; i += m_settings.cell_side)
 		{
 
-			SDL_RenderDrawLine(m_renderer.get(), i, 0, i, 1000);
-			SDL_RenderDrawLine(m_renderer.get(), 0, i, 1000, i);
+			SDL_RenderDrawLine(m_renderer.get(), i, 0, i, m_settings.window_height);
+			SDL_RenderDrawLine(m_renderer.get(), 0, i, m_settings.window_width, i);
 		}
 	}
 
 	void fill_cells(tt_program::details::board_t & board)
 	{
 		using tt_program::details::next_alive_cells_index;
-		using tt_program::details::coordinates_by_index;
 		using tt_program::details::start_pos;
 
-		std::int32_t board_size = ((1000 / 20) * (1000 / 20) + 1) / 8 + 1;
-		for(std::int32_t cell_group_index = next_alive_cells_index(board, start_pos); 
-			cell_group_index < board_size; 
-			cell_group_index = next_alive_cells_index(board, cell_group_index))
+		tt_program::details::cooedinate_converter converter{m_settings.board_width, m_settings.board_height};
+		std::int32_t board_size = (m_settings.board_width * m_settings.board_height) / 8 + 1;
+		for(std::int32_t block_index = next_alive_cells_index(board, start_pos); 
+			block_index < board_size; 
+			block_index = next_alive_cells_index(board, block_index))
 		{
-			for(std::int8_t bit_index = 0; bit_index < 8; ++bit_index)
+			for(std::int8_t cell_index = 0; cell_index < 8; ++cell_index)
 			{
 				
-				if( (board[cell_group_index] >> bit_index) & 1 )
+				if( (board[block_index] >> cell_index) & 1 )
 				{
 					SDL_SetRenderDrawColor(m_renderer.get(), 
 						colors::cell_color.red, 
@@ -119,8 +126,11 @@ private:
 						colors::cell_color.blue,
 						colors::cell_color.alpha );
 
-					auto point = coordinates_by_index(cell_group_index, bit_index);
-					SDL_Rect cell{ point.x * 20, point.y * 20, 20, 20 };
+					auto point = converter.coordinates_by_index(block_index, cell_index);
+					SDL_Rect cell{ point.x * m_settings.cell_side, 
+						point.y * m_settings.cell_side, 
+						m_settings.cell_side, 
+						m_settings.cell_side };
 					draw_cell( cell );				
 				}
 			}
@@ -135,14 +145,15 @@ private:
 public:
 	void fullscreen_handle()
 	{
-		is_fullscreen = !is_fullscreen;
-		SDL_SetWindowFullscreen(SDL_RenderGetWindow(m_renderer.get()), is_fullscreen);
+		m_settings.is_fullscreen = !m_settings.is_fullscreen;
+		if( SDL_SetWindowFullscreen(SDL_RenderGetWindow(m_renderer.get()), m_settings.is_fullscreen) < 0)
+			std::cout << SDL_GetError();
 	}
 
 private:
+	tt_program::settings_t m_settings;
 	tt_program::details::sdl_window_ptr m_window;
 	tt_program::details::sdl_renderer_ptr m_renderer;
-	bool is_fullscreen;
 };
 
 
@@ -167,9 +178,9 @@ renderer::~renderer()
 {}
 
 
-enum class error::status_code renderer::initialize()
+enum class error::status_code renderer::initialize(tt_program::settings_t & settings)
 {
-	m_status = m_impl->initialize();
+	m_status = m_impl->initialize(settings);
 
 	return m_status;
 }

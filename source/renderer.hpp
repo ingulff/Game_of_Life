@@ -25,7 +25,7 @@ public:
 	~renderer();
 
 public:
-	enum class error::status_code initialize();
+	enum class error::status_code initialize(tt_program::settings_t & settings);
 
 public:
 	void update(tt_program::details::board_t & board);

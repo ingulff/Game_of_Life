@@ -1,7 +1,7 @@
 /**
  *  ᛝ
  */
-
+#include <iostream>
 #include <memory>
 #include <set>
 #include <utility>
@@ -30,20 +30,18 @@ public:
 	engine_impl()
 		: m_settings(tt_program::make_default_settings())
 		, m_renderer()
-		, m_board_width(m_settings.window_width / m_settings.cell_side)
-		, m_board_height(m_settings.window_height / m_settings.cell_side)
 		, m_board(nullptr)
-		, m_is_loop_board(false)
+		, m_reserve_board(nullptr)
 	{}
 
 
 public:
 	enum class error::status_code initialize()
 	{
-		auto status = m_renderer.initialize();
+		auto status = m_renderer.initialize(m_settings);
 		if( is_initialized(status) )
 		{
-			std::int32_t board_size = (m_board_width * m_board_height) / 8 + 1;
+			std::int32_t board_size = (m_settings.board_width * m_settings.board_height) / 8 + 1;
 			m_board = board_t(new std::int8_t[board_size]{0});
 			m_reserve_board = board_t(new std::int8_t[board_size]{0});
 
@@ -80,7 +78,7 @@ private:
 private:
 	void clear_board(board_t & board)
 	{
-		for(std::int32_t i = 0, size = (m_board_width * m_board_height)/ 8 + 1; i < size; ++i)
+		for(std::int32_t i = 0, size = (m_settings.board_width * m_settings.board_height)/ 8 + 1; i < size; ++i)
 		{
 			board[i] = 0;
 		}
@@ -88,34 +86,30 @@ private:
 
 private:
 	void calculate_next_step()
-	{
-		using tt_program::details::index_by_coordinates;
-		using tt_program::details::bit_index_by_coordinates;
-		using tt_program::details::coordinates_by_index;
+	{;
 
-		//std::int32_t block_index = start_pos;
-		std::int32_t board_size = (m_board_width * m_board_height) / 8 + 1;
-		// находим блок, где есть изменненный бит, бит == селл
+		tt_program::details::cooedinate_converter converter{m_settings.board_width, m_settings.board_height};
+		std::int32_t board_size = (m_settings.board_width * m_settings.board_height) / 8 + 1;
 		for(std::int32_t cell_group_index = 0; 
 			cell_group_index < board_size; 
 			++cell_group_index)
 		{
-			for(std::int8_t bit_index = 0; bit_index < 8; ++bit_index)
+			for(std::int8_t cell_index = 0; cell_index < 8; ++cell_index)
 			{
-				auto [x, y] = coordinates_by_index(cell_group_index, bit_index );
-				auto neighbors = (m_is_loop_board) ? calclulate_neighbors_loop(x, y) : calclulate_neighbors(x, y);
-				if( will_be_aline(x, y, neighbors))
+				auto point = converter.coordinates_by_index(cell_group_index, cell_index );
+				auto neighbors = (m_settings.is_loop_board) ? calclulate_neighbors_loop(point) : calclulate_neighbors(point);
+				if( will_be_aline(point, neighbors))
 				{
 
-					m_reserve_board[index_by_coordinates(x, y)] |= (1 << bit_index_by_coordinates(x, y));
+					m_reserve_board[converter.coordinates_to_block_index(point)] |= (1 << converter.coordinates_to_cell_index(point));
 				}
-				else if(will_and_was_alive(x, y, neighbors))
+				else if(will_and_was_alive(point, neighbors))
 				{
-					m_reserve_board[index_by_coordinates(x, y)] |= (1 << bit_index_by_coordinates(x, y));
+					m_reserve_board[converter.coordinates_to_block_index(point)] |= (1 << converter.coordinates_to_cell_index(point));
 				}
 				else
 				{
-					m_reserve_board[index_by_coordinates(x, y)] &= ~(1 << bit_index_by_coordinates(x, y));
+					m_reserve_board[converter.coordinates_to_block_index(point)] &= ~(1 << converter.coordinates_to_cell_index(point));
 				}
 			}
 		}
@@ -123,46 +117,38 @@ private:
 
 private:
 
-	bool will_be_aline(std::int32_t x, std::int32_t y, std::int32_t neighbors)
+	bool will_be_aline(tt_program::details::point_t & point, std::int32_t neighbors)
 	{
-		using tt_program::details::index_by_coordinates;
-		using tt_program::details::bit_index_by_coordinates;
  
-		return ( (neighbors == 3) && !is_cell_alive(x, y) );
+		return ( (neighbors == 3) && !is_cell_alive(point.x, point.y) );
  	}
 
- 	bool will_and_was_alive(std::int32_t x, std::int32_t y, std::int32_t neighbors)
+ 	bool will_and_was_alive(tt_program::details::point_t & point, std::int32_t neighbors)
  	{
- 		return ( (neighbors == 2 || neighbors == 3) && is_cell_alive(x, y) );
+ 		return ( (neighbors == 2 || neighbors == 3) && is_cell_alive(point.x, point.y) );
  	}
 
 
-	std::int8_t calclulate_neighbors(std::int32_t x, std::int32_t y)
+	std::int8_t calclulate_neighbors(tt_program::details::point_t & point)
 	{
-		using tt_program::details::index_by_coordinates;
-		using tt_program::details::bit_index_by_coordinates;
-
-		std::int32_t cells_per_width =  m_board_width / m_settings.cell_side;
-		std::int32_t cells_per_height = m_board_height / m_settings.cell_side;
-
-		std::int32_t prev_x = (x - 1) < 0 ? cells_per_width : x - 1;
-		std::int32_t next_x = (x + 1) % cells_per_width;
-		std::int32_t prev_y = (y - 1) < 0 ? cells_per_height : y - 1;
-		std::int32_t next_y = (y + 1) % cells_per_height;
+		std::int32_t prev_x = (point.x - 1) < 0 ? m_settings.board_width-1 : point.x - 1;
+		std::int32_t next_x = (point.x + 1) % m_settings.board_width;
+		std::int32_t prev_y = (point.y - 1) < 0 ? m_settings.board_height-1 : point.y - 1;
+		std::int32_t next_y = (point.y + 1) % m_settings.board_height;
 		
 		std::int8_t neighbors = 0;
 		
-		bool has_prev_x = (x - 1 > -1);
-		bool has_next_x = (x + 1 <);
+		bool has_prev_x = (point.x - 1 > -1);
+		bool has_next_x = (point.x + 1 < m_settings.board_width);
 
-		if( y - 1 > -1 )
+		if( point.y - 1 > -1 )
 		{
 			if( has_prev_x )
 			{
-				neighbors += has_prev_x ? is_cell_alive(prev_x, prev_y);
+				neighbors += is_cell_alive(prev_x, prev_y);
 			}
 
-			neighbors += is_cell_alive(x, prev_y);
+			neighbors += is_cell_alive(point.x, prev_y);
 
 			if( has_next_x )
 			{
@@ -170,14 +156,14 @@ private:
 			}
 		}
 
-		if( y + 1 < cells_per_height )
+		if( point.y + 1 < m_settings.board_height )
 		{
 			if( has_prev_x )
 			{
 				neighbors += is_cell_alive(prev_x, next_y);
 			}
 
-			neighbors += is_cell_alive(x, next_y);
+			neighbors += is_cell_alive(point.x, next_y);
 
 			if( has_next_x )
 			{
@@ -187,38 +173,32 @@ private:
 
 		if( has_prev_x )
 		{
-			neighbors += is_cell_alive(prev_x, y);
+			neighbors += is_cell_alive(prev_x, point.y);
 		}
 
 		if( has_next_x )
 		{
-			neighbors += is_cell_alive(next_x, y);
+			neighbors += is_cell_alive(next_x, point.y);
 		}
 
 		return neighbors;
 	}
 
-	std::int8_t calclulate_neighbors_loop(std::int32_t x, std::int32_t y)
+	std::int8_t calclulate_neighbors_loop(tt_program::details::point_t & point)
 	{
-		using tt_program::details::index_by_coordinates;
-		using tt_program::details::bit_index_by_coordinates;
-
-		std::int32_t cells_per_width =  m_board_width / m_settings.cell_side;
-		std::int32_t cells_per_height = m_board_height / m_settings.cell_side;
+		std::int32_t prev_x = (point.x - 1) < 0 ? m_settings.board_width-1 : point.x - 1;
+		std::int32_t next_x = (point.x + 1) % m_settings.board_width;
+		std::int32_t prev_y = (point.y - 1) < 0 ? m_settings.board_height-1 : point.y - 1;
+		std::int32_t next_y = (point.y + 1) % m_settings.board_height;
 
 		std::int8_t neighbors = 0;
-		std::int32_t prev_x = (x - 1) < 0 ? cells_per_width : x - 1;
-		std::int32_t next_x = (x + 1) % cells_per_width;
-		std::int32_t prev_y = (y - 1) < 0 ? cells_per_height : y - 1;
-		std::int32_t next_y = (y + 1) % cells_per_height;
-
 		neighbors += is_cell_alive(prev_x, prev_y);
-		neighbors += is_cell_alive(prev_x, y);
+		neighbors += is_cell_alive(prev_x, point.y);
 		neighbors += is_cell_alive(prev_x, next_y);
-		neighbors += is_cell_alive(x, prev_y);
-		neighbors += is_cell_alive(x, next_y);
+		neighbors += is_cell_alive(point.x, prev_y);
+		neighbors += is_cell_alive(point.x, next_y);
 		neighbors += is_cell_alive(next_x, prev_y);
-		neighbors += is_cell_alive(next_x, y);
+		neighbors += is_cell_alive(next_x, point.y);
 		neighbors += is_cell_alive(next_x, next_y);
 		
 
@@ -227,26 +207,29 @@ private:
 
 	bool is_cell_alive(std::int32_t x, std::int32_t y)
 	{
-		using tt_program::details::index_by_coordinates;
-		using tt_program::details::bit_index_by_coordinates;
+		tt_program::details::cooedinate_converter converter{m_settings.board_width, m_settings.board_height};
+		tt_program::details::point_t point{x, y};
 
-		bool is_alive = ( ( m_board[index_by_coordinates(x, y)] >> bit_index_by_coordinates(x, y) )  & 1 );
+		bool is_alive = ( ( m_board[converter.coordinates_to_block_index(point)] >> converter.coordinates_to_cell_index(point) )  & 1 );
  
-		return  ( ( m_board[index_by_coordinates(x, y)] >> bit_index_by_coordinates(x, y) )  & 1 );
+		return  ( ( m_board[converter.coordinates_to_block_index(point)] >> converter.coordinates_to_cell_index(point) )  & 1 );
 
 	}
 
 public:
-	void change_cell_handle(point_t & mouse_position, tt_program::details::cell_state cell_status)
+	void change_cell_handle(point_t mouse_position, tt_program::details::cell_state cell_status)
 	{
+		mouse_position.x /= m_settings.cell_side;
+		mouse_position.y /= m_settings.cell_side;
+
 		if(cell_status == tt_program::details::cell_state::killed)
 		{
-			keep_cell_dead(mouse_position.x, mouse_position.y);
+			keep_cell_dead(mouse_position);
 		}
 
 		if(cell_status == tt_program::details::cell_state::alive)
 		{
-			keep_cell_alive(mouse_position.x, mouse_position.y);
+			keep_cell_alive(mouse_position);
 		}
 	}
 
@@ -258,40 +241,34 @@ public:
 
 	void loop_board_handle()
 	{
-		m_is_loop_board = !m_is_loop_board;
+		m_settings.is_loop_board = !m_settings.is_loop_board;
+	}
+
+	void fullscreen_handle()
+	{
+		m_renderer.fullscreen_handle();
 	}
 
 private:
-	void keep_cell_alive(std::int32_t x, std::int32_t y)
+	void keep_cell_alive(point_t & point)
 	{
-		using tt_program::details::index_by_coordinates;
-		using tt_program::details::bit_index_by_coordinates;
+		tt_program::details::cooedinate_converter converter{m_settings.board_width, m_settings.board_height};
 
-		auto index = index_by_coordinates(x, y);
-		auto bit = bit_index_by_coordinates(x, y);
-
-		m_board[index_by_coordinates(x, y)] |= (1 << bit_index_by_coordinates(x, y));
+		m_board[converter.coordinates_to_block_index(point)] |= (1 << converter.coordinates_to_cell_index(point));
 	}
 
-	void keep_cell_dead(std::int32_t x, std::int32_t y)
+	void keep_cell_dead(point_t & point)
 	{
-		using tt_program::details::index_by_coordinates;
-		using tt_program::details::bit_index_by_coordinates;
-		
-		auto index = index_by_coordinates(x, y);
-		auto bit = bit_index_by_coordinates(x, y);
+		tt_program::details::cooedinate_converter converter{m_settings.board_width, m_settings.board_height};
 
-		m_board[index_by_coordinates(x, y)] &= ~(1 << bit_index_by_coordinates(x, y));
+		m_board[converter.coordinates_to_block_index(point)] &= ~(1 << converter.coordinates_to_cell_index(point));
 	}
 
 private:
 	tt_program::settings_t m_settings;
 	tt_program::renderer m_renderer;
-	std::int32_t m_board_width;
-	std::int32_t m_board_height;
 	board_t m_board;
 	board_t m_reserve_board;
-	bool m_is_loop_board;
 };
 
 
@@ -331,6 +308,11 @@ void engine::clear_board_handle()
 void engine::loop_board_handle()
 {
 	m_impl->loop_board_handle();
+}
+
+void engine::fullscreen_handle()
+{
+	m_impl->fullscreen_handle();
 }
 
 } // namespace tt_program

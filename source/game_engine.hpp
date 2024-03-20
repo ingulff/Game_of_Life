@@ -36,6 +36,8 @@ public:
 
 	void loop_board_handle();
 
+	void fullscreen_handle();
+
 private:
 	class engine_impl;
 	std::unique_ptr<engine_impl> m_impl;
