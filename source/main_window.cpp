@@ -12,7 +12,7 @@
 #include "game_engine.hpp"
 #include "io_interactor.hpp"
 #include "main_window.hpp"
-#include "sdl_renderer.hpp"
+#include "renderer.hpp"
 #include "utils/sdl_window_ptr.hpp"
 
 namespace tt_program
@@ -172,7 +172,7 @@ public:
 
 private:
 	tt_program::details::sdl_window_ptr m_main_window;
-	tt_program::sdl_renderer m_renderer;
+	tt_program::renderer m_renderer;
 	tt_program::engine m_engine;
 	tt_program::io_interactor m_io_interactor;
 

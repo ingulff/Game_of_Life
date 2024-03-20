@@ -10,18 +10,18 @@
 namespace tt_program
 {
 
-class sdl_renderer
+class renderer
 {
 public:
-	sdl_renderer();
+	renderer();
 
-	sdl_renderer(sdl_renderer & other) = delete;
-	sdl_renderer & operator=(sdl_renderer & other) = delete;
+	renderer(renderer & other) = delete;
+	renderer & operator=(renderer & other) = delete;
 
-	sdl_renderer(sdl_renderer && other);
-	sdl_renderer & operator=(sdl_renderer && other);
+	renderer(renderer && other);
+	renderer & operator=(renderer && other);
 
-	~sdl_renderer();
+	~renderer();
 
 public:
 	enum class error::status_code initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags);
@@ -33,8 +33,8 @@ public:
 	void fullscreen_handle();
 
 private:
-	class sdl_renderer_impl;
-	std::unique_ptr<sdl_renderer_impl> m_impl;
+	class renderer_impl;
+	std::unique_ptr<renderer_impl> m_impl;
 
 	error::status_code m_status;
 };

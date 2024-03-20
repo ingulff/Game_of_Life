@@ -7,7 +7,7 @@
 
 #include "color_palete.hpp"
 #include "error/error.hpp"
-#include "sdl_renderer.hpp"
+#include "renderer.hpp"
 #include "utils/board.hpp"
 #include "utils/index_helpers.hpp"
 #include "utils/sdl_renderer_ptr.hpp"
@@ -16,27 +16,28 @@
 namespace tt_program
 {
 
-class sdl_renderer::sdl_renderer_impl
+class renderer::renderer_impl
 {
 
 public:
-	sdl_renderer_impl()
+	renderer_impl()
 		: m_renderer()
+		, is_fullscreen(false)
 	{}
 
-	sdl_renderer_impl(sdl_renderer_impl & other) = delete;
-	sdl_renderer_impl & operator=(sdl_renderer_impl & other) = delete;
+	renderer_impl(renderer_impl & other) = delete;
+	renderer_impl & operator=(renderer_impl & other) = delete;
 
-	sdl_renderer_impl(sdl_renderer_impl && other)
+	renderer_impl(renderer_impl && other)
 		: m_renderer(std::move(other.m_renderer))
 	{}
 
-	sdl_renderer_impl & operator=(sdl_renderer_impl && other)
+	renderer_impl & operator=(renderer_impl && other)
 	{
 		m_renderer = std::move(other.m_renderer);
 	}
 
-	~sdl_renderer_impl()
+	~renderer_impl()
 	{}
 
 public:
@@ -127,21 +128,29 @@ private:
 		SDL_RenderFillRect(m_renderer.get(), &cell);
 	}
 
+public:
+	void fullscreen_handle()
+	{
+		is_fullscreen = !is_fullscreen;
+		SDL_SetWindowFullscreen(SDL_RenderGetWindow(m_renderer.get()), is_fullscreen);
+	}
+
 private:
 	tt_program::details::sdl_renderer_ptr m_renderer;
+	bool is_fullscreen;
 };
 
 
-sdl_renderer::sdl_renderer()
-	: m_impl(std::make_unique<sdl_renderer_impl>())
+renderer::renderer()
+	: m_impl(std::make_unique<renderer_impl>())
 {}
 
-sdl_renderer::sdl_renderer(sdl_renderer && other)
+renderer::renderer(renderer && other)
 	: m_impl(std::move(other.m_impl))
 	, m_status(std::move(other.m_status))
 {}
 
-sdl_renderer & sdl_renderer::operator=(sdl_renderer && other)
+renderer & renderer::operator=(renderer && other)
 {
 	m_impl = std::move(other.m_impl);
 	m_status = std::move(other.m_status);
@@ -149,11 +158,11 @@ sdl_renderer & sdl_renderer::operator=(sdl_renderer && other)
 	return *this;
 }
 
-sdl_renderer::~sdl_renderer()
+renderer::~renderer()
 {}
 
 
-enum class error::status_code sdl_renderer::initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags)
+enum class error::status_code renderer::initialize(tt_program::details::sdl_window_ptr & window_ptr, int index, Uint32 flags)
 {
 	m_status = m_impl->initialize(window_ptr, index, flags);
 
@@ -161,14 +170,14 @@ enum class error::status_code sdl_renderer::initialize(tt_program::details::sdl_
 }
 
 
-void sdl_renderer::update(tt_program::details::board_t & board)
+void renderer::update(tt_program::details::board_t & board)
 {
 	m_impl->update(board);
 }
 
-void sdl_renderer::fullscreen_handle()
+void renderer::fullscreen_handle()
 {
-	
+	m_impl->fullscreen_handle();
 }
 
 } // namespace tt_program
