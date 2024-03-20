@@ -180,15 +180,15 @@ callbacks_t make_callbacks(std::function<void()> quit_handle,
 	std::function<void()> pause_handle,
 	std::function<void(tt_program::details::point_t mouse_point, tt_program::details::cell_state)> chagne_cell_handle,
 	std::function<void()> clear_board_handle,
-	std::function<void()> loop_table_handle,
-	std::function<void()> fullscreen_handle)
+	std::function<void()> fullscreen_handle,
+	std::function<void()> loop_table_handle)
 {
 	return { std::move(quit_handle), 
 		std::move(pause_handle), 
 		std::move(chagne_cell_handle),
 		std::move(clear_board_handle),
-		std::move(loop_table_handle),
-		std::move(fullscreen_handle)};
+		std::move(fullscreen_handle),
+		std::move(loop_table_handle)};
 }
 
 } // namespace tt_program
