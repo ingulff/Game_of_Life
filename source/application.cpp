@@ -11,44 +11,41 @@
 #include "error/error.hpp"
 #include "game_engine.hpp"
 #include "io_interactor.hpp"
-#include "main_window.hpp"
+#include "application.hpp"
 #include "renderer.hpp"
 #include "utils/sdl_window_ptr.hpp"
 
 namespace tt_program
 {
 
-class main_window::main_window_impl
+class application_t::application_impl
 {
 
 public:
-	main_window_impl()
-		: m_renderer()
-		, m_engine()
+	application_impl()
+		: m_engine()
 		, m_io_interactor()
 	{
 		initialize();
 	}
 
-	main_window_impl(main_window_impl & other) = delete;
-	main_window_impl & operator=(main_window_impl & other) = delete;
+	application_impl(application_impl & other) = delete;
+	application_impl & operator=(application_impl & other) = delete;
 
-	main_window_impl(main_window_impl && other)
-		: m_renderer(std::move(other.m_renderer))
-		, m_engine(std::move(other.m_engine))
+	application_impl(application_impl && other)
+		: m_engine(std::move(other.m_engine))
 		, m_io_interactor(std::move(other.m_io_interactor))
 		, m_status(std::move(other.m_status))
 	{}
 
-	main_window_impl & operator=(main_window_impl && other)
+	application_impl & operator=(application_impl && other)
 	{
-		m_renderer = std::move(other.m_renderer);
 		m_engine = std::move(other.m_engine);
 		m_io_interactor = std::move(other.m_io_interactor);
 		m_status = std::move(other.m_status);
 	}
 
-	~main_window_impl()
+	~application_impl()
 	{
 		this->deinitialize();
 	}
@@ -64,7 +61,6 @@ public:
 	{
 		if( SDL_Init(SDL_INIT_EVERYTHING) == 0 )
 		{
-			auto renderer_status = m_renderer.initialize();
 			auto engine_status = m_engine.initialize(1000, 1000);
 
 			auto quit_handle_callback = [this]()
@@ -98,8 +94,7 @@ public:
 				fullscreen_handler_callback,
 				loop_board_handler_callback));
 
-			bool is_init = is_initialized(renderer_status) 
-				&& is_initialized(engine_status)
+			bool is_init = is_initialized(engine_status)
 				&& is_initialized(interactor_status);
 
 			if( is_init )
@@ -162,9 +157,7 @@ public:
 			}
 		
 			m_io_interactor.update();
-			auto board = m_engine.update(m_status);
-			m_renderer.update(board);
-
+			m_engine.update(m_status);
 		}
 
 		return error::to_errc(m_status);
@@ -179,24 +172,24 @@ private:
 };
 
 
-main_window::main_window()
-	: m_impl(std::make_unique<main_window_impl>())
+application_t::application_t()
+	: m_impl(std::make_unique<application_impl>())
 {}
 
-main_window::main_window(main_window && other) = default;
-main_window & main_window::operator=(main_window && other) = default;
+application_t::application_t(application_t && other) = default;
+application_t & application_t::operator=(application_t && other) = default;
 
-main_window::~main_window()
+application_t::~application_t()
 {}
 
 
-int main_window::initialize()
+int application_t::initialize()
 {
 	return error::to_int(m_impl->initialize());
 }
 
 
-int main_window::exec()
+int application_t::exec()
 {
 	return error::to_int(m_impl->exec());
 }

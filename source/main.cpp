@@ -4,11 +4,11 @@
 
 #include <iostream> // delete this
 
-#include "main_window.hpp"
+#include "application.hpp"
 
 int main(int argc, char ** argv)
 {
-	tt_program::main_window main_window;
+	tt_program::application_t application;
 
-	return main_window.exec();
+	return application.exec();
 }
