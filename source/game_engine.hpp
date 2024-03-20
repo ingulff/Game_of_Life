@@ -27,7 +27,7 @@ public:
 	enum class error::status_code initialize(std::int32_t width, std::int32_t height);
 
 public:
-	std::shared_ptr<std::int8_t[]> update(error::status_code & status);
+	void update(error::status_code & status);
 
 public:
 	void change_cell_handle(tt_program::details::point_t, tt_program::details::cell_state cell_status);

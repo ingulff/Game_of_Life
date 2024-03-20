@@ -10,6 +10,7 @@
 
 #include "error/error.hpp"
 #include "game_engine.hpp"
+#include "renderer.hpp"
 #include "utils/board.hpp"
 #include "utils/index_helpers.hpp"
 #include "utils/sdl_mouse_handler.hpp"
@@ -26,7 +27,8 @@ private:
 
 public:
 	engine_impl()
-		: m_board_width(0)
+		: m_renderer()
+		, m_board_width(0)
 		, m_board_height(0)
 		, m_board(nullptr)
 		, m_is_loop_board(false)
@@ -36,17 +38,22 @@ public:
 public:
 	enum class error::status_code initialize(std::int32_t width, std::int32_t height)
 	{
-		m_board_width = width;
-		m_board_height = height;
-		std::int32_t board_size = ((width * height) / 20 + 1) / 8 + 1;
-		m_board = board_t(new std::int8_t[board_size]{0});
-		m_reserve_board = board_t(new std::int8_t[board_size]{0});
+		auto status = m_renderer.initialize();
+		if( is_initialized(status) )
+		{
+			m_board_width = width;
+			m_board_height = height;
+			std::int32_t board_size = ((width * height) / 20 + 1) / 8 + 1;
+			m_board = board_t(new std::int8_t[board_size]{0});
+			m_reserve_board = board_t(new std::int8_t[board_size]{0});
 
+		}
+		
 		return error::status_code::paused;
 	}
 
 public:
-	std::shared_ptr<std::int8_t[]> update(error::status_code & status)
+	void update(error::status_code & status)
 	{
 		if( is_playable(status) )
 		{
@@ -56,10 +63,15 @@ public:
 			swap(m_board, m_reserve_board);
 		}
 
-		return m_board;
+		m_renderer.update(m_board);
 	}
 
 private:
+	bool is_initialized(error::status_code & status)
+	{
+		return status == error::status_code::paused;
+	}
+
 	bool is_playable(error::status_code & status)
 	{
 		return status == error::status_code::active;
@@ -261,6 +273,7 @@ private:
 	}
 
 private:
+	tt_program::renderer m_renderer;
 	std::int32_t m_board_width;
 	std::int32_t m_board_height;
 	board_t m_board;
@@ -286,9 +299,9 @@ enum class error::status_code engine::initialize(std::int32_t width, std::int32_
 }
 
 
-std::shared_ptr<std::int8_t[]> engine::update(error::status_code & status)
+void engine::update(error::status_code & status)
 {
-	return m_impl->update(status);
+	m_impl->update(status);
 }
 
 
