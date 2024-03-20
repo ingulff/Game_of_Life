@@ -3,7 +3,6 @@
  */
 
 #include <iostream>
-#include <vector>
 
 #include <cstdint>
 
@@ -14,15 +13,29 @@ namespace tt_program::details
 {
 
 // if you change this function also you need check coordinates_by_index works correctly
-std::int32_t index_by_coordinates(std::int32_t x, std::int32_t y)
+std::int32_t cooedinate_converter::coordinates_to_block_index(const struct point_t & point)
 {
-	return ( y * (1000 / 20) + x ) / 8; 
+	return ( point.y * m_height + point.x ) / 8; 
 }
 
-std::int32_t bit_index_by_coordinates(std::int32_t x, std::int32_t y)
+
+std::int8_t cooedinate_converter::coordinates_to_cell_index(const struct point_t & point)
 {
-	return ( y * (1000 / 20) + x ) % 8;
+	return ( point.y * m_height + point.x ) % 8;
 }
+
+
+// if you change this function also you need check index_by_coordinates works correctly
+struct point_t cooedinate_converter::coordinates_by_index(std::int32_t block_index, std::int8_t cell_index)
+{
+
+	auto coordinates_combination = block_index * 8 + cell_index;
+	std::int32_t y = coordinates_combination / m_height;
+	std::int32_t x = coordinates_combination % m_width;
+	
+	return { x, y }; 
+}
+
 
 
 std::int32_t next_alive_cells_index(board_t & board, std::int32_t last_index)
@@ -40,14 +53,6 @@ std::int32_t next_alive_cells_index(board_t & board, std::int32_t last_index)
 	return new_index;
 }
 
-// if you change this function also you need check index_by_coordinates works correctly
-point_t coordinates_by_index(std::int32_t group_index, std::int8_t cell_index)
-{
-	auto coordinates_combination = group_index * 8 + cell_index;
-	std::int32_t y = coordinates_combination / (1000 / 20);
-	std::int32_t x = coordinates_combination % (1000/ 20);
 
-	return { x, y }; 
-}
 
 } // namespace tt_program::details
