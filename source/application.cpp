@@ -61,7 +61,7 @@ public:
 	{
 		if( SDL_Init(SDL_INIT_EVERYTHING) == 0 )
 		{
-			auto engine_status = m_engine.initialize(1000, 1000);
+			auto engine_status = m_engine.initialize();
 
 			auto quit_handle_callback = [this]()
 			{

@@ -11,6 +11,7 @@
 #include "error/error.hpp"
 #include "game_engine.hpp"
 #include "renderer.hpp"
+#include "settings.hpp"
 #include "utils/board.hpp"
 #include "utils/index_helpers.hpp"
 #include "utils/sdl_mouse_handler.hpp"
@@ -27,23 +28,22 @@ private:
 
 public:
 	engine_impl()
-		: m_renderer()
-		, m_board_width(0)
-		, m_board_height(0)
+		: m_settings(tt_program::make_default_settings())
+		, m_renderer()
+		, m_board_width(m_settings.window_width / m_settings.cell_side)
+		, m_board_height(m_settings.window_height / m_settings.cell_side)
 		, m_board(nullptr)
 		, m_is_loop_board(false)
 	{}
 
 
 public:
-	enum class error::status_code initialize(std::int32_t width, std::int32_t height)
+	enum class error::status_code initialize()
 	{
 		auto status = m_renderer.initialize();
 		if( is_initialized(status) )
 		{
-			m_board_width = width;
-			m_board_height = height;
-			std::int32_t board_size = ((width * height) / 20 + 1) / 8 + 1;
+			std::int32_t board_size = (m_board_width * m_board_height) / 8 + 1;
 			m_board = board_t(new std::int8_t[board_size]{0});
 			m_reserve_board = board_t(new std::int8_t[board_size]{0});
 
@@ -80,8 +80,7 @@ private:
 private:
 	void clear_board(board_t & board)
 	{
-		for(std::int32_t i = 0, size = ((m_board_width * m_board_height) / 20 + 1) / 8 + 1;
-			i < size; ++i)
+		for(std::int32_t i = 0, size = (m_board_width * m_board_height)/ 8 + 1; i < size; ++i)
 		{
 			board[i] = 0;
 		}
@@ -95,7 +94,7 @@ private:
 		using tt_program::details::coordinates_by_index;
 
 		//std::int32_t block_index = start_pos;
-		std::int32_t board_size = ((1000 / 20) * (1000 / 20) + 1) / 8 + 1;
+		std::int32_t board_size = (m_board_width * m_board_height) / 8 + 1;
 		// находим блок, где есть изменненный бит, бит == селл
 		for(std::int32_t cell_group_index = 0; 
 			cell_group_index < board_size; 
@@ -143,47 +142,57 @@ private:
 		using tt_program::details::index_by_coordinates;
 		using tt_program::details::bit_index_by_coordinates;
 
+		std::int32_t cells_per_width =  m_board_width / m_settings.cell_side;
+		std::int32_t cells_per_height = m_board_height / m_settings.cell_side;
+
+		std::int32_t prev_x = (x - 1) < 0 ? cells_per_width : x - 1;
+		std::int32_t next_x = (x + 1) % cells_per_width;
+		std::int32_t prev_y = (y - 1) < 0 ? cells_per_height : y - 1;
+		std::int32_t next_y = (y + 1) % cells_per_height;
+		
 		std::int8_t neighbors = 0;
+		
 		bool has_prev_x = (x - 1 > -1);
-		bool has_next_x = (x + 1 < m_board_width / 20);
-		if(y - 1 > -1)
+		bool has_next_x = (x + 1 <);
+
+		if( y - 1 > -1 )
 		{
 			if( has_prev_x )
 			{
-				neighbors += is_cell_alive(x-1, y-1);
+				neighbors += has_prev_x ? is_cell_alive(prev_x, prev_y);
 			}
 
-			neighbors += is_cell_alive(x, y-1);
+			neighbors += is_cell_alive(x, prev_y);
 
 			if( has_next_x )
 			{
-				neighbors += is_cell_alive(x+1, y-1);
+				neighbors += is_cell_alive(next_x, prev_y);
 			}
 		}
 
-		if(y + 1 < m_board_height / 20)
+		if( y + 1 < cells_per_height )
 		{
 			if( has_prev_x )
 			{
-				neighbors += is_cell_alive(x-1, y+1);
+				neighbors += is_cell_alive(prev_x, next_y);
 			}
 
-			neighbors += is_cell_alive(x, y+1);
+			neighbors += is_cell_alive(x, next_y);
 
 			if( has_next_x )
 			{
-				neighbors += is_cell_alive(x+1, y+1);
+				neighbors += is_cell_alive(next_x, next_y);
 			}
 		}
 
 		if( has_prev_x )
 		{
-			neighbors += is_cell_alive(x-1, y);
+			neighbors += is_cell_alive(prev_x, y);
 		}
 
 		if( has_next_x )
 		{
-			neighbors += is_cell_alive(x+1, y);
+			neighbors += is_cell_alive(next_x, y);
 		}
 
 		return neighbors;
@@ -194,11 +203,14 @@ private:
 		using tt_program::details::index_by_coordinates;
 		using tt_program::details::bit_index_by_coordinates;
 
+		std::int32_t cells_per_width =  m_board_width / m_settings.cell_side;
+		std::int32_t cells_per_height = m_board_height / m_settings.cell_side;
+
 		std::int8_t neighbors = 0;
-		std::int32_t prev_x = (x - 1) < 0 ? 49 : x - 1;
-		std::int32_t next_x = (x + 1) % 50;
-		std::int32_t prev_y = (y - 1) < 0 ? 49 : y - 1;
-		std::int32_t next_y = (y + 1) % 50;
+		std::int32_t prev_x = (x - 1) < 0 ? cells_per_width : x - 1;
+		std::int32_t next_x = (x + 1) % cells_per_width;
+		std::int32_t prev_y = (y - 1) < 0 ? cells_per_height : y - 1;
+		std::int32_t next_y = (y + 1) % cells_per_height;
 
 		neighbors += is_cell_alive(prev_x, prev_y);
 		neighbors += is_cell_alive(prev_x, y);
@@ -273,6 +285,7 @@ private:
 	}
 
 private:
+	tt_program::settings_t m_settings;
 	tt_program::renderer m_renderer;
 	std::int32_t m_board_width;
 	std::int32_t m_board_height;
@@ -293,9 +306,9 @@ engine::~engine()
 {}
 
 
-enum class error::status_code engine::initialize(std::int32_t width, std::int32_t height)
+enum class error::status_code engine::initialize()
 {
-	return m_impl->initialize(width, height);
+	return m_impl->initialize();
 }
 
 

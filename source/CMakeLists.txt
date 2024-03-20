@@ -76,7 +76,7 @@ set(${EXECUTABLE_TARGET_NAME}_source
 	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/application.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
-#	${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/utils/index_helpers.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/utils/sdl_mouse_handler.cpp
 )

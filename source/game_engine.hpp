@@ -24,7 +24,7 @@ public:
 	~engine();
 
 public:
-	enum class error::status_code initialize(std::int32_t width, std::int32_t height);
+	enum class error::status_code initialize();
 
 public:
 	void update(error::status_code & status);
