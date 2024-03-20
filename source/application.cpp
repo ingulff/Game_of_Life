@@ -8,12 +8,10 @@
 #include <SDL.h>
 #undef main
 
+#include "application.hpp"
 #include "error/error.hpp"
 #include "game_engine.hpp"
 #include "io_interactor.hpp"
-#include "application.hpp"
-#include "renderer.hpp"
-#include "utils/sdl_window_ptr.hpp"
 
 namespace tt_program
 {
@@ -81,7 +79,7 @@ public:
 			};
 			auto fullscreen_handler_callback = [this]()
 			{
-				this->m_renderer.fullscreen_handle();
+				this->m_engine.fullscreen_handle();
 			};
 			auto loop_board_handler_callback = [this]()
 			{
@@ -164,7 +162,6 @@ public:
 	}
 
 private:
-	tt_program::renderer m_renderer;
 	tt_program::engine m_engine;
 	tt_program::io_interactor m_io_interactor;
 
