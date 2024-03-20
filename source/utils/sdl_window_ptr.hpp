@@ -12,12 +12,11 @@ class sdl_window_ptr
 {
 public:
 	sdl_window_ptr()
-		: m_window(SDL_CreateWindow("Game of Life",
-				SDL_WINDOWPOS_CENTERED,
-				SDL_WINDOWPOS_CENTERED,
-				1000,
-				1000,
-				0))
+		: m_window(nullptr)
+	{}
+
+	sdl_window_ptr(const char *title, int x, int y, int w, int h, Uint32 flags)
+		: m_window(SDL_CreateWindow(title, x, y, w, h, flags))
 	{}
 
 	sdl_window_ptr(sdl_window_ptr & other) = delete;
@@ -36,7 +35,6 @@ public:
 	~sdl_window_ptr()
 	{
 		SDL_DestroyWindow(m_window);
-
 	}
 
 public:
