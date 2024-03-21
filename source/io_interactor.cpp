@@ -54,12 +54,12 @@ public:
 	}
 
 public:
-	void update()
+	void update(error::status_code status)
 	{
 		using tt_program::details::to_mouse_button_type;
 
 		auto mouse_status = tt_program::details::mouse_handle();
-		if( m_callbacks.chagne_cell_handle )
+		if( is_paintable(status) && m_callbacks.chagne_cell_handle )
 		{
 			if( tt_program::details::is_left_clicked(to_mouse_button_type(mouse_status.status))  )
 			{
@@ -88,6 +88,12 @@ public:
 				break;
 			}
 		}
+	}
+
+private:
+	bool is_paintable(error::status_code status)
+	{
+		return error::status_code::paused == status;
 	}
 
 private:
@@ -159,9 +165,9 @@ enum class error::status_code io_interactor::initialize(callbacks_t callbacks)
 }
 
 
-void io_interactor::update()
+void io_interactor::update(error::status_code status)
 {
-	m_impl->update();
+	m_impl->update(status);
 }
 
 

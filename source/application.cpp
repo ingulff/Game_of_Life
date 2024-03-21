@@ -154,7 +154,7 @@ public:
 				break;
 			}
 		
-			m_io_interactor.update();
+			m_io_interactor.update(m_status);
 			m_engine.update(m_status);
 		}
 

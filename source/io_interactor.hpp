@@ -45,7 +45,7 @@ public:
 	enum class error::status_code  initialize(callbacks_t callbacks);
 
 public:
-	void update();
+	void update(error::status_code status);
 
 private:
 	class io_interactor_impl;
