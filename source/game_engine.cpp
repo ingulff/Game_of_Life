@@ -219,8 +219,16 @@ private:
 public:
 	void change_cell_handle(point_t mouse_position, tt_program::details::cell_state cell_status)
 	{
+		mouse_position.x -= m_renderer.x_offset();
+		mouse_position.y -= m_renderer.y_offset();
 		mouse_position.x /= m_settings.cell_side;
 		mouse_position.y /= m_settings.cell_side;
+
+		if(mouse_position.x < 0 || mouse_position.y < 0 
+			|| mouse_position.x > m_settings.board_width || mouse_position.y > m_settings.board_height)
+		{
+			return;
+		}
 
 		if(cell_status == tt_program::details::cell_state::killed)
 		{

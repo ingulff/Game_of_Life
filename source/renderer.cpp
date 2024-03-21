@@ -23,9 +23,14 @@ class renderer::renderer_impl
 public:
 	renderer_impl()
 		: m_settings(tt_program::make_default_settings())
+		, m_x_offset(0)
+		, m_y_offset(0)
 		, m_window()
 		, m_renderer()
-	{}
+	{
+		calc_x_offset(m_settings.window_width);
+		calc_y_offset(m_settings.window_height);
+	}
 
 	renderer_impl(renderer_impl & other) = delete;
 	renderer_impl & operator=(renderer_impl & other) = delete;
@@ -60,6 +65,8 @@ public:
 		if( m_renderer && m_window )
 		{
 			m_settings = settings;
+			calc_x_offset(m_settings.window_width);
+			calc_y_offset(m_settings.window_height);
 			result = error::status_code::paused;
 		}
 
@@ -74,6 +81,28 @@ public:
 		draw_backgrownd_lines();
 
 		SDL_RenderPresent(m_renderer.get());
+	}
+
+public:
+	std::int32_t x_offset() const
+	{
+		return m_x_offset;
+	}
+
+	std::int32_t y_offset() const
+	{
+		return m_y_offset;
+	}
+
+private:
+	void calc_x_offset(int32_t window_width)
+	{
+		m_x_offset =  (window_width - m_settings.board_width * m_settings.cell_side) / 2;
+	}
+
+	void calc_y_offset(int32_t window_height)
+	{
+		m_y_offset = (window_height - m_settings.board_height * m_settings.cell_side) / 2;
 	}
 
 private:
@@ -96,11 +125,35 @@ private:
 			colors::lines_color.blue,
 			colors::lines_color.alpha );
 
-		for(std::int32_t i = 0; i <= m_settings.window_width; i += m_settings.cell_side)
+		int32_t window_width = m_settings.window_width;
+		int32_t window_height = m_settings.window_height;
+		if( m_settings.is_fullscreen )
 		{
+			SDL_GetWindowSize(m_window.get(), &window_width, &window_height);
+		}
 
-			SDL_RenderDrawLine(m_renderer.get(), i, 0, i, m_settings.window_height);
-			SDL_RenderDrawLine(m_renderer.get(), 0, i, m_settings.window_width, i);
+		calc_x_offset(window_width);
+		calc_y_offset(window_height);
+		for(std::int32_t i = 0, 
+			x = m_x_offset + i * m_settings.cell_side,
+			y0 = m_y_offset,
+			y1 = window_height - m_y_offset; 
+			i <= m_settings.board_width; 
+			++i)
+		{
+			 x = m_x_offset + i * m_settings.cell_side;
+			SDL_RenderDrawLine(m_renderer.get(), x, y0, x, y1);
+		}
+		
+		for(std::int32_t i = 0,
+			y = m_y_offset + i * m_settings.cell_side,
+			x0 = m_x_offset,
+			x1 = window_width - m_x_offset; 
+			i <= m_settings.board_width;
+			 ++i)
+		{
+			y = m_y_offset + i * m_settings.cell_side;
+			SDL_RenderDrawLine(m_renderer.get(), x0, y, x1, y);
 		}
 	}
 
@@ -127,8 +180,8 @@ private:
 						colors::cell_color.alpha );
 
 					auto point = converter.coordinates_by_index(block_index, cell_index);
-					SDL_Rect cell{ point.x * m_settings.cell_side, 
-						point.y * m_settings.cell_side, 
+					SDL_Rect cell{ point.x * m_settings.cell_side + m_x_offset, 
+						point.y * m_settings.cell_side + m_y_offset, 
 						m_settings.cell_side, 
 						m_settings.cell_side };
 					draw_cell( cell );				
@@ -152,6 +205,8 @@ public:
 
 private:
 	tt_program::settings_t m_settings;
+	std::int32_t m_x_offset;
+	std::int32_t m_y_offset;
 	tt_program::details::sdl_window_ptr m_window;
 	tt_program::details::sdl_renderer_ptr m_renderer;
 };
@@ -183,6 +238,17 @@ enum class error::status_code renderer::initialize(tt_program::settings_t & sett
 	m_status = m_impl->initialize(settings);
 
 	return m_status;
+}
+
+
+std::int32_t renderer::x_offset() const
+{
+	return m_impl->x_offset();
+}
+
+std::int32_t renderer::y_offset() const
+{
+	return m_impl->y_offset();
 }
 
 
