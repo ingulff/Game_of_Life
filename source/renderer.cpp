@@ -148,7 +148,7 @@ private:
 			y = m_y_offset + i * m_settings.cell_side,
 			x0 = m_x_offset,
 			x1 = window_width - m_x_offset; 
-			i <= m_settings.board_width;
+			i <= m_settings.board_height;
 			 ++i)
 		{
 			y = m_y_offset + i * m_settings.cell_side;
