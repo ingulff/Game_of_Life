@@ -4,7 +4,8 @@
 #include <memory>
 
 #include "error/error.hpp"
-#include "utils/index_helpers.hpp"
+//#include "utils/index_helpers.hpp"
+#include "utils/point.hpp"
 #include "utils/sdl_mouse_handler.hpp"
 
 namespace tt_program
@@ -30,7 +31,7 @@ public:
 	void update(error::status_code & status);
 
 public:
-	void change_cell_handle(tt_program::details::point_t, tt_program::details::cell_state cell_status);
+	void change_cell_handle(tt_program::details::point_t, bool is_alive_cell);
 
 	void clear_board_handle();
 

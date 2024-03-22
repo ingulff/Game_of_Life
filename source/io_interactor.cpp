@@ -11,7 +11,8 @@
 
 #include "error/error.hpp"
 #include "io_interactor.hpp"
-#include "utils/index_helpers.hpp"
+//#include "utils/index_helpers.hpp"
+#include "utils/point.hpp"
 #include "utils/sdl_mouse_handler.hpp"
 
 
@@ -63,12 +64,12 @@ public:
 		{
 			if( tt_program::details::is_left_clicked(to_mouse_button_type(mouse_status.status))  )
 			{
-				m_callbacks.chagne_cell_handle({mouse_status.pos_x, mouse_status.pos_y}, tt_program::details::cell_state::alive);
+				m_callbacks.chagne_cell_handle({mouse_status.pos_x, mouse_status.pos_y}, true);
 			}
 
 			if( tt_program::details::is_right_clicked(to_mouse_button_type(mouse_status.status)) )
 			{
-				m_callbacks.chagne_cell_handle({mouse_status.pos_x, mouse_status.pos_y}, tt_program::details::cell_state::killed);
+				m_callbacks.chagne_cell_handle({mouse_status.pos_x, mouse_status.pos_y}, false);
 			}
 			
 		}
@@ -173,7 +174,7 @@ void io_interactor::update(error::status_code status)
 
 callbacks_t make_callbacks(std::function<void()> quit_handle, 
 	std::function<void()> pause_handle,
-	std::function<void(tt_program::details::point_t mouse_point, tt_program::details::cell_state)> chagne_cell_handle,
+	std::function<void(tt_program::details::point_t mouse_point,  bool is_alive_cell)> chagne_cell_handle,
 	std::function<void()> clear_board_handle,
 	std::function<void()> fullscreen_handle,
 	std::function<void()> loop_table_handle)

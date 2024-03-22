@@ -6,7 +6,6 @@
 #include "error/error.hpp"
 #include "settings.hpp"
 #include "utils/board.hpp"
-#include "utils/sdl_window_ptr.hpp"
 
 namespace tt_program
 {

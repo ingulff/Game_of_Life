@@ -69,9 +69,9 @@ public:
 			{
 				this->pause_handle();
 			};
-			auto change_cell_handler_callback = [this](tt_program::details::point_t mouse_status, tt_program::details::cell_state cell_status)
+			auto change_cell_handler_callback = [this](tt_program::details::point_t mouse_status, bool is_alive_cell)
 			{
-				this->m_engine.change_cell_handle( std::move(mouse_status), cell_status);
+				this->m_engine.change_cell_handle( std::move(mouse_status), is_alive_cell);
 			};
 			auto clear_board_hanler_callback = [this]()
 			{

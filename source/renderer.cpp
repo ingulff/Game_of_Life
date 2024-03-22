@@ -10,7 +10,6 @@
 #include "renderer.hpp"
 #include "settings.hpp"
 #include "utils/board.hpp"
-#include "utils/index_helpers.hpp"
 #include "utils/sdl_renderer_ptr.hpp"
 #include "utils/sdl_window_ptr.hpp"
 
@@ -159,34 +158,24 @@ private:
 
 	void fill_cells(tt_program::details::board_t & board)
 	{
-		using tt_program::details::next_alive_cells_index;
-		using tt_program::details::start_pos;
-
-		tt_program::details::cooedinate_converter converter{m_settings.board_width, m_settings.board_height};
-		std::int32_t board_size = (m_settings.board_width * m_settings.board_height) / 8 + 1;
-		for(std::int32_t block_index = next_alive_cells_index(board, start_pos); 
-			block_index < board_size; 
-			block_index = next_alive_cells_index(board, block_index))
+		for(auto alive_it = board.alive_begin(), end_it = board.alive_end();
+			alive_it != end_it; ++alive_it )
 		{
-			for(std::int8_t cell_index = 0; cell_index < 8; ++cell_index)
+			if( (*alive_it).is_alive() )
 			{
-				
-				if( (board[block_index] >> cell_index) & 1 )
-				{
-					SDL_SetRenderDrawColor(m_renderer.get(), 
+				SDL_SetRenderDrawColor(m_renderer.get(), 
 						colors::cell_color.red, 
 						colors::cell_color.green, 
 						colors::cell_color.blue,
 						colors::cell_color.alpha );
 
-					auto point = converter.coordinates_by_index(block_index, cell_index);
-					SDL_Rect cell{ point.x * m_settings.cell_side + m_x_offset, 
+				auto point = board.coordinates(alive_it);
+				SDL_Rect cell{ point.x * m_settings.cell_side + m_x_offset, 
 						point.y * m_settings.cell_side + m_y_offset, 
 						m_settings.cell_side, 
 						m_settings.cell_side };
-					draw_cell( cell );				
-				}
-			}
+				draw_cell( cell );
+			}	
 		}
 	}
 
@@ -200,7 +189,10 @@ public:
 	{
 		m_settings.is_fullscreen = !m_settings.is_fullscreen;
 		if( SDL_SetWindowFullscreen(SDL_RenderGetWindow(m_renderer.get()), m_settings.is_fullscreen) < 0)
-			std::cout << SDL_GetError();
+		{
+			// nothink
+			//SDL_GetError();
+		}
 	}
 
 private:
