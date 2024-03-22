@@ -277,7 +277,7 @@ std::int32_t board_t::coordinates_to_block_index(const tt_program::details::poin
 
 std::uint8_t board_t::coordinates_to_cell_mask(const tt_program::details::point_t & coordinates)
 {
-	return static_cast<std::uint8_t>(1 << (( coordinates.y * m_height + coordinates.x ) % 8));
+	return static_cast<std::uint8_t>(1 << (( coordinates.y * m_width + coordinates.x ) % 8));
 }
 
 
