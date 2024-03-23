@@ -2,7 +2,7 @@
  *  ᛝ
  */
 
-#include "utils/board.hpp"
+#include "board.hpp"
 #include "utils/point.hpp"
 
 

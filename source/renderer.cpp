@@ -72,7 +72,7 @@ public:
 	}
 
 public:
-	void update(tt_program::details::board_t & board)
+	void update(tt_program::board_t & board)
 	{
 		fill_backgrownd();
 		fill_cells(board);
@@ -155,7 +155,7 @@ private:
 		}
 	}
 
-	void fill_cells(tt_program::details::board_t & board)
+	void fill_cells(tt_program::board_t & board)
 	{
 		for(auto alive_it = board.alive_begin(), end_it = board.alive_end();
 			alive_it != end_it; ++alive_it )
@@ -243,7 +243,7 @@ std::int32_t renderer::y_offset() const
 }
 
 
-void renderer::update(tt_program::details::board_t & board)
+void renderer::update(tt_program::board_t & board)
 {
 	m_impl->update(board);
 }

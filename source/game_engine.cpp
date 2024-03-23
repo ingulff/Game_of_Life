@@ -22,7 +22,7 @@ class engine::engine_impl
 {
 
 private:
-	using board_t = tt_program::details::board_t;
+	using board_t = tt_program::board_t;
 	using point_t = tt_program::details::point_t;
 
 public:

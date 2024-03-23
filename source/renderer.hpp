@@ -32,7 +32,7 @@ public:
 	std::int32_t renderer::y_offset() const;
 
 public:
-	void update(tt_program::details::board_t & board);
+	void update(tt_program::board_t & board);
 
 public:
 	void fullscreen_handle();
