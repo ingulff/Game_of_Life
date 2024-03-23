@@ -22,9 +22,6 @@ enum class parser_status : std::int8_t
 	need_use_default = 0x0002,
 };
 
-enum class errc to_errc(status_code status) noexcept;
-
-
 enum class errc
 {
 	ok = 0x00000000,
@@ -33,8 +30,9 @@ enum class errc
 	invalid_cli_parsing = 0x00000003,
 };
 
-enum class errc to_errc(parser_status status) noexcept;
+enum error::errc to_errc(status_code status) noexcept;
 
+enum error::errc to_errc(parser_status status) noexcept;
 
 int to_int(errc error_code) noexcept;
 

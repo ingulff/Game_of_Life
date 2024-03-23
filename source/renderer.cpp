@@ -48,7 +48,7 @@ public:
 	{}
 
 public:
-	enum class error::status_code initialize(tt_program::settings_t & settings)
+	enum error::status_code initialize(tt_program::settings_t & settings)
 	{
 		m_window = tt_program::utilss::sdl_window_ptr("Life", 
 				SDL_WINDOWPOS_CENTERED, 
@@ -58,7 +58,7 @@ public:
 				0);
 		m_renderer = tt_program::utilss::sdl_renderer_ptr(m_window.get(),  -1, SDL_RENDERER_PRESENTVSYNC);
 
-		enum class error::status_code result = error::status_code::invalid;
+		enum error::status_code result = error::status_code::invalid;
 
 		if( m_renderer && m_window )
 		{
@@ -224,7 +224,7 @@ renderer::~renderer()
 {}
 
 
-enum class error::status_code renderer::initialize(tt_program::settings_t & settings)
+enum error::status_code renderer::initialize(tt_program::settings_t & settings)
 {
 	m_status = m_impl->initialize(settings);
 

@@ -7,7 +7,7 @@
 namespace error
 {
 
-enum class errc to_errc(status_code status) noexcept
+enum errc to_errc(status_code status) noexcept
 {
 	errc error;
 	switch(status)
@@ -27,7 +27,7 @@ enum class errc to_errc(status_code status) noexcept
 }
 
 
-enum class errc to_errc(parser_status status) noexcept
+enum errc to_errc(parser_status status) noexcept
 {
 	errc error;
 	switch(status)

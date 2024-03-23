@@ -19,9 +19,9 @@ struct mouse_t mouse_handle()
 }
 
 
-enum class mouse_button_t to_mouse_button_type(int type)
+enum mouse_button_t to_mouse_button_type(int type)
 {
-	enum class mouse_button_t button;
+	enum mouse_button_t button;
 	switch(type)
 	{
 	case 1:

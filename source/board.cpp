@@ -237,22 +237,22 @@ board_t::alive_iterator board_t::alive_end()
 }
 
 
-tt_program::utilss::point_t board_t::coordinates(board_t::iterator & it)
+tt_program::utilss::point_t board_t::coordinates(const board_t::iterator & it) const
 {
 	return coordinates(it.m_block, it.m_mask);
 }
 
-tt_program::utilss::point_t board_t::coordinates(board_t::alive_iterator & it)
+tt_program::utilss::point_t board_t::coordinates(const board_t::alive_iterator & it) const
 {
 	return coordinates(it.m_block, it.m_mask);
 }
 
-tt_program::utilss::point_t board_t::coordinates(board_t::cell_t & cell)
+tt_program::utilss::point_t board_t::coordinates(const board_t::cell_t & cell) const
 {
 	return coordinates(&(cell.m_block), cell.m_mask);
 }
 
-tt_program::utilss::point_t board_t::coordinates(const std::uint8_t const * block, std::uint8_t mask)
+tt_program::utilss::point_t board_t::coordinates(const std::uint8_t const * block, std::uint8_t mask) const
 {
 	std::int32_t y_distance = block - &(m_buffer[0]);
 	std::int32_t x_distanle = 0;

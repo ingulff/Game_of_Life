@@ -135,14 +135,14 @@ public:
 	board_t::alive_iterator alive_end();
 
 public:
-	tt_program::utilss::point_t coordinates(board_t::iterator & it);
+	tt_program::utilss::point_t coordinates(const board_t::iterator & it) const;
 
-	tt_program::utilss::point_t coordinates(board_t::alive_iterator & it);
+	tt_program::utilss::point_t coordinates(const board_t::alive_iterator & it) const;
 
-	tt_program::utilss::point_t coordinates(board_t::cell_t & cell);
+	tt_program::utilss::point_t coordinates(const board_t::cell_t & cell) const;
 
 public:
-	tt_program::utilss::point_t coordinates(const std::uint8_t const * block, std::uint8_t mask);
+	tt_program::utilss::point_t coordinates(const std::uint8_t const * block, std::uint8_t mask) const;
 
 
 private:

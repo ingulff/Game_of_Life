@@ -43,7 +43,7 @@ public:
 	~io_interactor();
 
 public:
-	enum class error::status_code  initialize(callbacks_t callbacks);
+	enum error::status_code  initialize(callbacks_t callbacks);
 
 public:
 	void update(error::status_code status);

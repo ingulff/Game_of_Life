@@ -35,12 +35,12 @@ public:
 
 
 public:
-	enum class error::status_code initialize()
+	enum error::status_code initialize()
 	{
 		return initialize_impl();
 	}
 
-	enum class error::status_code initialize(std::int32_t board_width, std::int32_t board_height)
+	enum error::status_code initialize(std::int32_t board_width, std::int32_t board_height)
 	{
 		m_settings.board_width = board_width;
 		m_settings.board_height = board_height;
@@ -51,7 +51,7 @@ public:
 	}
 
 private:
-	enum class error::status_code initialize_impl()
+	enum error::status_code initialize_impl()
 	{
 		auto status = m_renderer.initialize(m_settings);
 		if( is_initialized(status) )
@@ -243,12 +243,12 @@ engine::~engine()
 {}
 
 
-enum class error::status_code engine::initialize()
+enum error::status_code engine::initialize()
 {
 	return m_impl->initialize();
 }
 
-enum class error::status_code engine::initialize(std::int32_t board_width, std::int32_t board_height)
+enum error::status_code engine::initialize(std::int32_t board_width, std::int32_t board_height)
 {
 	return m_impl->initialize(board_width, board_height);
 }

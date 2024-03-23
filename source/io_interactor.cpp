@@ -46,7 +46,7 @@ public:
 	{}
 
 public:
-	enum class error::status_code  initialize(callbacks_t callbacks)
+	enum error::status_code  initialize(callbacks_t callbacks)
 	{
 		m_callbacks = std::move(callbacks);
 		return error::status_code::paused; // start state
@@ -158,7 +158,7 @@ io_interactor::~io_interactor()
 {}
 
 
-enum class error::status_code io_interactor::initialize(callbacks_t callbacks)
+enum error::status_code io_interactor::initialize(callbacks_t callbacks)
 {
 	return m_impl->initialize( std::move(callbacks) );
 }

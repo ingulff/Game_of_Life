@@ -112,7 +112,7 @@ public:
 	}
 
 private:
-	enum class error::status_code initialize_impl()
+	enum error::status_code initialize_impl()
 	{
 		auto quit_handle_callback = [this]()
 		{
@@ -198,7 +198,7 @@ private:
 	tt_program::engine m_engine;
 	tt_program::io_interactor m_io_interactor;
 
-	enum class error::status_code m_status;
+	enum error::status_code m_status;
 };
 
 

@@ -24,12 +24,12 @@ public:
 	~renderer();
 
 public:
-	enum class error::status_code initialize(tt_program::settings_t & settings);
+	enum error::status_code initialize(tt_program::settings_t & settings);
 
 public:
-	std::int32_t renderer::x_offset() const;
+	std::int32_t x_offset() const;
 
-	std::int32_t renderer::y_offset() const;
+	std::int32_t y_offset() const;
 
 public:
 	void update(tt_program::board_t & board);

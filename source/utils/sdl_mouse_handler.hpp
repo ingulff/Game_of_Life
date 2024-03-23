@@ -28,7 +28,7 @@ enum class mouse_button_t
 	unknown = 7,
 };
 
-enum class mouse_button_t to_mouse_button_type(int type);
+enum mouse_button_t to_mouse_button_type(int type);
 
 
 bool is_left_clicked(mouse_button_t status);
