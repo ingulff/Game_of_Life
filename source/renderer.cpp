@@ -50,13 +50,13 @@ public:
 public:
 	enum class error::status_code initialize(tt_program::settings_t & settings)
 	{
-		m_window = tt_program::details::sdl_window_ptr("Life", 
+		m_window = tt_program::utilss::sdl_window_ptr("Life", 
 				SDL_WINDOWPOS_CENTERED, 
 				SDL_WINDOWPOS_CENTERED, 
 				m_settings.window_width, 
 				m_settings.window_height,
 				0);
-		m_renderer = tt_program::details::sdl_renderer_ptr(m_window.get(),  -1, SDL_RENDERER_PRESENTVSYNC);
+		m_renderer = tt_program::utilss::sdl_renderer_ptr(m_window.get(),  -1, SDL_RENDERER_PRESENTVSYNC);
 
 		enum class error::status_code result = error::status_code::invalid;
 
@@ -198,8 +198,8 @@ private:
 	tt_program::settings_t m_settings;
 	std::int32_t m_x_offset;
 	std::int32_t m_y_offset;
-	tt_program::details::sdl_window_ptr m_window;
-	tt_program::details::sdl_renderer_ptr m_renderer;
+	tt_program::utilss::sdl_window_ptr m_window;
+	tt_program::utilss::sdl_renderer_ptr m_renderer;
 };
 
 

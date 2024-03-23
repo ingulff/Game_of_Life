@@ -112,7 +112,7 @@ public:
 
 public:
 
-	cell_t operator[](const tt_program::details::point_t & coordinates);
+	cell_t operator[](const tt_program::utilss::point_t & coordinates);
 
 	//cell_t operator[](const std::int32_t x, const std::int32_t y);
 
@@ -135,21 +135,21 @@ public:
 	board_t::alive_iterator alive_end();
 
 public:
-	tt_program::details::point_t coordinates(board_t::iterator & it);
+	tt_program::utilss::point_t coordinates(board_t::iterator & it);
 
-	tt_program::details::point_t coordinates(board_t::alive_iterator & it);
+	tt_program::utilss::point_t coordinates(board_t::alive_iterator & it);
 
-	tt_program::details::point_t coordinates(board_t::cell_t & cell);
+	tt_program::utilss::point_t coordinates(board_t::cell_t & cell);
 
 public:
-	tt_program::details::point_t coordinates(const std::uint8_t const * block, std::uint8_t mask);
+	tt_program::utilss::point_t coordinates(const std::uint8_t const * block, std::uint8_t mask);
 
 
 private:
 
-	std::int32_t coordinates_to_block_index(const tt_program::details::point_t & point);
+	std::int32_t coordinates_to_block_index(const tt_program::utilss::point_t & point);
 
-	std::uint8_t coordinates_to_cell_mask(const tt_program::details::point_t & point);
+	std::uint8_t coordinates_to_cell_mask(const tt_program::utilss::point_t & point);
 
 private:
 	std::int32_t m_width;

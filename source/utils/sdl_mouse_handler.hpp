@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace tt_program::details
+namespace tt_program::utilss
 {
 
 struct mouse_t

@@ -153,7 +153,7 @@ board_t::board_t(std::int32_t width, std::int32_t height)
 }
 
 
-board_t::cell_t board_t::operator[](const tt_program::details::point_t & coordinates)
+board_t::cell_t board_t::operator[](const tt_program::utilss::point_t & coordinates)
 {
 	cell_t cell{ m_buffer[coordinates_to_block_index(coordinates)], coordinates_to_cell_mask(coordinates) };
 
@@ -237,22 +237,22 @@ board_t::alive_iterator board_t::alive_end()
 }
 
 
-tt_program::details::point_t board_t::coordinates(board_t::iterator & it)
+tt_program::utilss::point_t board_t::coordinates(board_t::iterator & it)
 {
 	return coordinates(it.m_block, it.m_mask);
 }
 
-tt_program::details::point_t board_t::coordinates(board_t::alive_iterator & it)
+tt_program::utilss::point_t board_t::coordinates(board_t::alive_iterator & it)
 {
 	return coordinates(it.m_block, it.m_mask);
 }
 
-tt_program::details::point_t board_t::coordinates(board_t::cell_t & cell)
+tt_program::utilss::point_t board_t::coordinates(board_t::cell_t & cell)
 {
 	return coordinates(&(cell.m_block), cell.m_mask);
 }
 
-tt_program::details::point_t board_t::coordinates(const std::uint8_t const * block, std::uint8_t mask)
+tt_program::utilss::point_t board_t::coordinates(const std::uint8_t const * block, std::uint8_t mask)
 {
 	std::int32_t y_distance = block - &(m_buffer[0]);
 	std::int32_t x_distanle = 0;
@@ -270,12 +270,12 @@ tt_program::details::point_t board_t::coordinates(const std::uint8_t const * blo
 
 
 // if you change this function also you need check coordinates_by_index works correctly
-std::int32_t board_t::coordinates_to_block_index(const tt_program::details::point_t & coordinates)
+std::int32_t board_t::coordinates_to_block_index(const tt_program::utilss::point_t & coordinates)
 {
 	return ( coordinates.y * m_width + coordinates.x ) / 8; 
 }
 
-std::uint8_t board_t::coordinates_to_cell_mask(const tt_program::details::point_t & coordinates)
+std::uint8_t board_t::coordinates_to_cell_mask(const tt_program::utilss::point_t & coordinates)
 {
 	return static_cast<std::uint8_t>(1 << (( coordinates.y * m_width + coordinates.x ) % 8));
 }

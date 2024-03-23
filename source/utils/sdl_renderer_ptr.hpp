@@ -5,7 +5,7 @@
 
 #include <SDL_render.h>
 
-namespace tt_program::details
+namespace tt_program::utilss
 {
 
 class sdl_renderer_ptr
@@ -63,6 +63,6 @@ private:
 	SDL_Renderer * m_renderer;
 };
 
-} // namespace tt_program::details
+} // namespace tt_program::utilss
 
 #endif TT_SDL_RENDERER_PTR_HPP

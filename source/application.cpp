@@ -122,7 +122,7 @@ private:
 		{
 			this->pause_handle();
 		};
-		auto change_cell_handler_callback = [this](tt_program::details::point_t mouse_status, bool is_alive_cell)
+		auto change_cell_handler_callback = [this](tt_program::utilss::point_t mouse_status, bool is_alive_cell)
 		{
 			this->m_engine.change_cell_handle( std::move(mouse_status), is_alive_cell);
 		};

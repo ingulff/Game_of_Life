@@ -55,17 +55,17 @@ public:
 public:
 	void update(error::status_code status)
 	{
-		using tt_program::details::to_mouse_button_type;
+		using tt_program::utilss::to_mouse_button_type;
 
-		auto mouse_status = tt_program::details::mouse_handle();
+		auto mouse_status = tt_program::utilss::mouse_handle();
 		if( is_paintable(status) && m_callbacks.chagne_cell_handle )
 		{
-			if( tt_program::details::is_left_clicked(to_mouse_button_type(mouse_status.status))  )
+			if( tt_program::utilss::is_left_clicked(to_mouse_button_type(mouse_status.status))  )
 			{
 				m_callbacks.chagne_cell_handle({mouse_status.pos_x, mouse_status.pos_y}, true);
 			}
 
-			if( tt_program::details::is_right_clicked(to_mouse_button_type(mouse_status.status)) )
+			if( tt_program::utilss::is_right_clicked(to_mouse_button_type(mouse_status.status)) )
 			{
 				m_callbacks.chagne_cell_handle({mouse_status.pos_x, mouse_status.pos_y}, false);
 			}
@@ -172,7 +172,7 @@ void io_interactor::update(error::status_code status)
 
 callbacks_t make_callbacks(std::function<void()> quit_handle, 
 	std::function<void()> pause_handle,
-	std::function<void(tt_program::details::point_t mouse_point,  bool is_alive_cell)> chagne_cell_handle,
+	std::function<void(tt_program::utilss::point_t mouse_point,  bool is_alive_cell)> chagne_cell_handle,
 	std::function<void()> clear_board_handle,
 	std::function<void()> fullscreen_handle,
 	std::function<void()> loop_table_handle)

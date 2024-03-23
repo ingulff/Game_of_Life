@@ -5,7 +5,7 @@
 
 #include <SDL_video.h>
 
-namespace tt_program::details
+namespace tt_program::utilss
 {
 
 class sdl_window_ptr
@@ -63,6 +63,6 @@ private:
 	SDL_Window * m_window;	
 };
 
-} // namespace tt_program::details
+} // namespace tt_program::utilss
 
 #endif // TT_SDL_WINDOW_PTR_HPP

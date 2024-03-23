@@ -7,7 +7,7 @@
 
 #include "utils/sdl_mouse_handler.hpp"
 
-namespace tt_program::details
+namespace tt_program::utilss
 {
 
 struct mouse_t mouse_handle()
@@ -60,4 +60,4 @@ bool is_right_clicked(mouse_button_t status)
 	return status == mouse_button_t::right;
 }
 
-} // namespace tt_program::details
+} // namespace tt_program::utilss

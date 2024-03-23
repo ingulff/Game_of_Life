@@ -1,7 +1,7 @@
 #ifndef TT_POINT_HPP
 #define TT_POINT_HPP
 
-namespace tt_program::details
+namespace tt_program::utilss
 {
 
 struct point_t

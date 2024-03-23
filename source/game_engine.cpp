@@ -23,7 +23,7 @@ class engine::engine_impl
 
 private:
 	using board_t = tt_program::board_t;
-	using point_t = tt_program::details::point_t;
+	using point_t = tt_program::utilss::point_t;
 
 public:
 	engine_impl()
@@ -101,19 +101,19 @@ private:
 
 private:
 
-	bool will_be_aline(tt_program::details::point_t & point, std::int32_t neighbors)
+	bool will_be_aline(tt_program::utilss::point_t & point, std::int32_t neighbors)
 	{
  
 		return ( (neighbors == 3) && !m_board[point].is_alive() );
  	}
 
- 	bool will_and_was_alive(tt_program::details::point_t & point, std::int32_t neighbors)
+ 	bool will_and_was_alive(tt_program::utilss::point_t & point, std::int32_t neighbors)
  	{
  		return ( (neighbors == 2 || neighbors == 3) && m_board[point].is_alive() );
  	}
 
 
-	std::uint8_t calclulate_neighbors(tt_program::details::point_t & point)
+	std::uint8_t calclulate_neighbors(tt_program::utilss::point_t & point)
 	{
 		std::int32_t prev_x = point.x - 1;
 		std::int32_t next_x = point.x + 1;
@@ -170,7 +170,7 @@ private:
 		return neighbors;
 	}
 
-	std::uint8_t calclulate_neighbors_loop(tt_program::details::point_t & point)
+	std::uint8_t calclulate_neighbors_loop(tt_program::utilss::point_t & point)
 	{
 		std::int32_t prev_x = (point.x - 1) < 0 ? m_settings.board_width-1 : point.x - 1;
 		std::int32_t next_x = (point.x + 1) % m_settings.board_width;
@@ -260,7 +260,7 @@ void engine::update(error::status_code & status)
 }
 
 
-void engine::change_cell_handle(tt_program::details::point_t mouse_position, bool is_alive_cell)
+void engine::change_cell_handle(tt_program::utilss::point_t mouse_position, bool is_alive_cell)
 {
 	m_impl->change_cell_handle(mouse_position, is_alive_cell);
 }
