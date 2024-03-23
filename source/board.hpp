@@ -10,7 +10,7 @@
 
 //#include "utils/index_helpers.hpp"
 
-namespace tt_program::details
+namespace tt_program
 {
 
 class board_t
@@ -171,6 +171,6 @@ bool operator!= (const Iterator & a, const OtherIteratorType& b)
 }
 
 
-} // namespace tt_program::details
+} // namespace tt_program
 
 #endif // TT_BOARD_HPP

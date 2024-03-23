@@ -8,11 +8,11 @@
 
 #include <cstdint>
 
+#include "board.hpp"
 #include "error/error.hpp"
 #include "game_engine.hpp"
 #include "renderer.hpp"
 #include "settings.hpp"
-#include "utils/board.hpp"
 #include "utils/sdl_mouse_handler.hpp"
 
 namespace tt_program

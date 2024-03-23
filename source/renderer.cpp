@@ -4,11 +4,11 @@
 
 #include <utility>
 
+#include "board.hpp"
 #include "color_palete.hpp"
 #include "error/error.hpp"
 #include "renderer.hpp"
 #include "settings.hpp"
-#include "utils/board.hpp"
 #include "utils/sdl_renderer_ptr.hpp"
 #include "utils/sdl_window_ptr.hpp"
 

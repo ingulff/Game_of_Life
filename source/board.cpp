@@ -6,7 +6,7 @@
 #include "utils/point.hpp"
 
 
-namespace tt_program::details
+namespace tt_program
 {
 
 // cell_t
@@ -281,5 +281,5 @@ std::uint8_t board_t::coordinates_to_cell_mask(const tt_program::details::point_
 }
 
 
-} // namespace tt_program::details
+} // namespace tt_program
 

@@ -3,9 +3,9 @@
 
 #include <memory>
 
+#include "board.hpp"
 #include "error/error.hpp"
 #include "settings.hpp"
-#include "utils/board.hpp"
 
 namespace tt_program
 {

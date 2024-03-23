@@ -71,6 +71,7 @@ message(STATUS "taget:${EXECUTABLE_TARGET_NAME} option DEFAULT_FULLSCREEN=${DEFA
 
 set(${EXECUTABLE_TARGET_NAME}_source
 	${CMAKE_CURRENT_SOURCE_DIR}/application.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/board.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/cli_options_parser.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/error/error.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/game_engine.cpp
@@ -78,7 +79,6 @@ set(${EXECUTABLE_TARGET_NAME}_source
 	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/utils/board.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/utils/sdl_mouse_handler.cpp
 )
 
