@@ -127,8 +127,6 @@ target_compile_options(${EXECUTABLE_TARGET_NAME}
 target_include_directories(${EXECUTABLE_TARGET_NAME}
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}
-		#${BOOST_INCLUDE}
-		#${OPENSSL_INCLUDE_DIR}
 		${SDL2_INCLUDE_DIR}
 )
 

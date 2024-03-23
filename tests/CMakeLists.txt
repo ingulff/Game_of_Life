@@ -77,8 +77,6 @@ target_include_directories(${EXECUTABLE_TARGET_NAME}
 		${CMAKE_SOURCE_DIR}/source
 		${CMAKE_SOURCE_DIR}/tests
 		${CMAKE_SOURCE_DIR}/tests/3rdparty
-		#${BOOST_INCLUDE}
-		#${OPENSSL_INCLUDE_DIR}
 )
 
 target_link_libraries(${EXECUTABLE_TARGET_NAME}
