@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "error/error.hpp"
-//#include "utils/index_helpers.hpp"
 #include "utils/point.hpp"
 #include "utils/sdl_mouse_handler.hpp"
 
@@ -26,6 +25,8 @@ public:
 
 public:
 	enum class error::status_code initialize();
+
+	enum class error::status_code initialize(std::int32_t board_width, std::int32_t board_height);
 
 public:
 	void update(error::status_code & status);

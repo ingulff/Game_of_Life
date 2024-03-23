@@ -1,7 +1,7 @@
 /**
  *  ᛝ
  */
-#include <iostream>
+
 #include <memory>
 #include <set>
 #include <utility>
@@ -13,7 +13,6 @@
 #include "renderer.hpp"
 #include "settings.hpp"
 #include "utils/board.hpp"
-//#include "utils/index_helpers.hpp"
 #include "utils/sdl_mouse_handler.hpp"
 
 namespace tt_program
@@ -37,6 +36,22 @@ public:
 
 public:
 	enum class error::status_code initialize()
+	{
+		return initialize_impl();
+	}
+
+	enum class error::status_code initialize(std::int32_t board_width, std::int32_t board_height)
+	{
+		m_settings.board_width = board_width;
+		m_settings.board_height = board_height;
+		m_settings.cell_side = ( (m_settings.window_width / board_width) < (m_settings.window_height / board_height) ) ?
+			 (m_settings.window_width / board_width) : (m_settings.window_height / board_height);
+
+		return initialize_impl();
+	}
+
+private:
+	enum class error::status_code initialize_impl()
 	{
 		auto status = m_renderer.initialize(m_settings);
 		if( is_initialized(status) )
@@ -231,6 +246,11 @@ engine::~engine()
 enum class error::status_code engine::initialize()
 {
 	return m_impl->initialize();
+}
+
+enum class error::status_code engine::initialize(std::int32_t board_width, std::int32_t board_height)
+{
+	return m_impl->initialize(board_width, board_height);
 }
 
 

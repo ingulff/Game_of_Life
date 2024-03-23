@@ -2,7 +2,6 @@
  *  ᛝ
  */
 
-#include <iostream> // delete
 #include <utility>
 
 #include <SDL.h>
@@ -23,9 +22,7 @@ public:
 	application_impl()
 		: m_engine()
 		, m_io_interactor()
-	{
-		initialize();
-	}
+	{}
 
 	application_impl(application_impl & other) = delete;
 	application_impl & operator=(application_impl & other) = delete;
@@ -61,36 +58,35 @@ public:
 		{
 			auto engine_status = m_engine.initialize();
 
-			auto quit_handle_callback = [this]()
+			auto interactor_status = initialize_impl();
+
+			bool is_init = is_initialized(engine_status)
+				&& is_initialized(interactor_status);
+
+			if( is_init )
 			{
-				this->quit_handle();
-			};
-			auto pause_handle_callback = [this]()
-			{
-				this->pause_handle();
-			};
-			auto change_cell_handler_callback = [this](tt_program::details::point_t mouse_status, bool is_alive_cell)
-			{
-				this->m_engine.change_cell_handle( std::move(mouse_status), is_alive_cell);
-			};
-			auto clear_board_hanler_callback = [this]()
-			{
-				this->m_engine.clear_board_handle();
-			};
-			auto fullscreen_handler_callback = [this]()
-			{
-				this->m_engine.fullscreen_handle();
-			};
-			auto loop_board_handler_callback = [this]()
-			{
-				this->m_engine.loop_board_handle();
-			};
-			auto interactor_status = m_io_interactor.initialize(tt_program::make_callbacks(quit_handle_callback, 
-				pause_handle_callback, 
-				change_cell_handler_callback,
-				clear_board_hanler_callback,
-				fullscreen_handler_callback,
-				loop_board_handler_callback));
+				m_status = error::status_code::paused;
+			}
+		}
+
+		error::errc error = error::errc::invalid_initialization;
+		if( is_playable() )
+		{
+			error = error::errc::ok;
+		}
+
+		return error;
+	}
+
+
+	error::errc initialize(std::int32_t board_width, std::int32_t board_height)
+	{
+
+		if( SDL_Init(SDL_INIT_EVERYTHING) == 0 )
+		{
+			auto engine_status = m_engine.initialize(board_width, board_height);
+
+			auto interactor_status = initialize_impl();
 
 			bool is_init = is_initialized(engine_status)
 				&& is_initialized(interactor_status);
@@ -113,6 +109,43 @@ public:
 	void deinitialize()
 	{
 		SDL_Quit();
+	}
+
+private:
+	enum class error::status_code initialize_impl()
+	{
+		auto quit_handle_callback = [this]()
+		{
+			this->quit_handle();
+		};
+		auto pause_handle_callback = [this]()
+		{
+			this->pause_handle();
+		};
+		auto change_cell_handler_callback = [this](tt_program::details::point_t mouse_status, bool is_alive_cell)
+		{
+			this->m_engine.change_cell_handle( std::move(mouse_status), is_alive_cell);
+		};
+		auto clear_board_hanler_callback = [this]()
+		{
+			this->m_engine.clear_board_handle();
+		};
+		auto fullscreen_handler_callback = [this]()
+		{
+			this->m_engine.fullscreen_handle();
+		};
+		auto loop_board_handler_callback = [this]()
+		{
+			this->m_engine.loop_board_handle();
+		};
+		auto interactor_status = m_io_interactor.initialize(tt_program::make_callbacks(quit_handle_callback, 
+			pause_handle_callback, 
+			change_cell_handler_callback,
+			clear_board_hanler_callback,
+			fullscreen_handler_callback,
+			loop_board_handler_callback));
+
+		return interactor_status;
 	}
 
 private:
@@ -183,6 +216,11 @@ application_t::~application_t()
 int application_t::initialize()
 {
 	return error::to_int(m_impl->initialize());
+}
+
+int application_t::initialize(std::int32_t board_width, std::int32_t board_height)
+{
+	return error::to_int(m_impl->initialize(board_width, board_height));
 }
 
 

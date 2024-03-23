@@ -2,7 +2,6 @@
  *  ᛝ
  */
 
-#include <iostream>
 #include <functional>
 #include <utility>
 
@@ -11,7 +10,6 @@
 
 #include "error/error.hpp"
 #include "io_interactor.hpp"
-//#include "utils/index_helpers.hpp"
 #include "utils/point.hpp"
 #include "utils/sdl_mouse_handler.hpp"
 

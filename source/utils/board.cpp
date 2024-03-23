@@ -1,7 +1,7 @@
 /**
  *  ᛝ
  */
-#include <iostream>
+
 #include "utils/board.hpp"
 #include "utils/point.hpp"
 

@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include <cstdint>
+
 #include "error/error.hpp"
 
 namespace tt_program
@@ -24,6 +26,8 @@ public:
 
 public:
 	int initialize();
+
+	int initialize(std::int32_t board_width, std::int32_t board_height);
 
 public:
 	int exec();

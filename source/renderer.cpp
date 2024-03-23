@@ -2,7 +2,6 @@
  *  ᛝ
  */
 
-#include <iostream>
 #include <utility>
 
 #include "color_palete.hpp"
