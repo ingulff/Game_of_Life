@@ -55,12 +55,36 @@
 			"hidden": true
 		},
 		{
+			"name": "make",
+			"description": "Unix Makefiles generic preset",
+			"generator": "Unix Makefiles",
+			"hidden": true
+		},
+		{
 			"name": "clang-windows",
 			"description": "Clang generic options preset",
 			"hidden": true,
 			"cacheVariables": {
 				"CMAKE_C_COMPILER": "clang-cl",
 				"CMAKE_CXX_COMPILER": "clang-cl"
+			}
+		},
+		{
+			"name": "clang",
+			"description": "*nix clang generic preset",
+			"hidden": true,
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "clang",
+				"CMAKE_CXX_COMPILER": "clang++"
+			}
+		},
+		{
+			"name": "gcc",
+			"description": "*nix gcc generic present",
+			"hidden": true,
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "gcc",
+				"CMAKE_CXX_COMPILER": "g++"
 			}
 		},
 		{
@@ -256,6 +280,106 @@
 					"intelliSenseMode": "windows-clang-x64"
 				}
 			}
+		},
+		{
+			"name": "make-gcc-x64-debug-linux",
+			"displayName": "Unix Makefiles gcc x64 Debug Linux config preset",
+			"description": "Unix Makefiles gcc x64 Debug Linux",
+			"hidden": false,
+			"inherits": [
+				"linux-generic",
+				"make",
+				"gcc",
+				"debug-generic"
+			]
+		},
+		{
+			"name": "make-gcc-x64-release-linux",
+			"displayName": "Unix Makefiles gcc x64 Release Linux config preset",
+			"description": "Unix Makefiles gcc x64 Release Linux",
+			"hidden": false,
+			"inherits": [
+				"generic",
+				"linux-generic",
+				"make",
+				"gcc",
+				"release-generic"
+			]
+		},
+		{
+			"name": "make-clang-x64-debug-linux",
+			"displayName": "Unix Makefiles Clang x64 Debug Linux config preset",
+			"description": "Unix Makefiles Clang x64 Debug Linux",
+			"hidden": false,
+			"inherits": [
+				"linux-generic",
+				"make",
+				"clang",
+				"debug-generic"
+			]
+		},
+		{
+			"name": "make-clang-x64-release-linux",
+			"displayName": "Unix Makefiles Clang x64 Release Linux config preset",
+			"description": "Unix Makefiles Clang x64 Release Linux",
+			"hidden": false,
+			"inherits": [
+				"generic",
+				"linux-generic",
+				"make",
+				"clang",
+				"release-generic"
+			]
+		},
+		{
+			"name": "ninja-gcc-x64-debug-linux",
+			"displayName": "Ninja gcc x64 Debug Linux config preset",
+			"description": "Ninja gcc x64 Debug Linux",
+			"hidden": false,
+			"inherits": [
+				"linux-generic",
+				"ninja",
+				"gcc",
+				"debug-generic"
+			]
+		},
+		{
+			"name": "ninja-gcc-x64-release-linux",
+			"displayName": "Ninja gcc x64 Release Linux config preset",
+			"description": "Ninja gcc x64 Release Linux",
+			"hidden": false,
+			"inherits": [
+				"generic",
+				"linux-generic",
+				"ninja",
+				"gcc",
+				"release-generic"
+			]
+		},
+		{
+			"name": "ninja-clang-x64-debug-linux",
+			"displayName": "Ninja Clang x64 Debug Linux config preset",
+			"description": "Ninja Clang x64 Debug Linux",
+			"hidden": false,
+			"inherits": [
+				"linux-generic",
+				"ninja",
+				"clang",
+				"debug-generic"
+			]
+		},
+		{
+			"name": "ninja-clang-x64-release-linux",
+			"displayName": "Ninja Clang x64 Release Linux config preset",
+			"description": "Ninja Clang x64 Release Linux",
+			"hidden": false,
+			"inherits": [
+				"generic",
+				"linux-generic",
+				"ninja",
+				"clang",
+				"release-generic"
+			]
 		}
 	],
 	"buildPresets": [
@@ -328,6 +452,62 @@
 			"hidden": false,
 			"inherits": [ "release-generic" ],
 			"configurePreset": "ninja-clang-x64-release-windows"
+		},
+		{
+			"name": "make-gcc-x64-debug-linux",
+			"displayName": "Unix Makefiles gcc x64 Debug Linux build preset",
+			"hidden": false,
+			"inherits": [ "debug-generic" ],
+			"configurePreset": "make-gcc-x64-debug-linux"
+		},
+		{
+			"name": "make-gcc-x64-release-linux",
+			"displayName": "Unix Makefiles gcc x64 Release Linux build preset",
+			"hidden": false,
+			"inherits": [ "release-generic" ],
+			"configurePreset": "make-gcc-x64-release-linux"
+		},
+		{
+			"name": "make-clang-x64-debug-linux",
+			"displayName": "Unix Makefiles Clang x64 Debug Linux build preset",
+			"hidden": false,
+			"inherits": [ "debug-generic" ],
+			"configurePreset": "make-clang-x64-debug-linux"
+		},
+		{
+			"name": "make-clang-x64-release-linux",
+			"displayName": "Unix Makefiles Clang x64 Release Linux build preset",
+			"hidden": false,
+			"inherits": [ "release-generic" ],
+			"configurePreset": "make-clang-x64-release-linux"
+		},
+		{
+			"name": "ninja-gcc-x64-debug-linux",
+			"displayName": "Ninja gcc x64 Debug Linux build preset",
+			"hidden": false,
+			"inherits": [ "debug-generic" ],
+			"configurePreset": "ninja-gcc-x64-debug-linux"
+		},
+		{
+			"name": "ninja-gcc-x64-release-linux",
+			"displayName": "Ninja gcc x64 Release Linux build preset",
+			"hidden": false,
+			"inherits": [ "release-generic" ],
+			"configurePreset": "ninja-gcc-x64-release-linux"
+		},
+		{
+			"name": "ninja-clang-x64-debug-linux",
+			"displayName": "Ninja Clang x64 Debug Linux build preset",
+			"hidden": false,
+			"inherits": [ "debug-generic" ],
+			"configurePreset": "ninja-clang-x64-debug-linux"
+		},
+		{
+			"name": "ninja-clang-x64-release-linux",
+			"displayName": "Ninja Clang x64 Release Linux build preset",
+			"hidden": false,
+			"inherits": [ "release-generic" ],
+			"configurePreset": "ninja-clang-x64-release-linux"
 		}
 	]
 }
